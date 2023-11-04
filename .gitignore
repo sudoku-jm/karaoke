@@ -1,0 +1,48 @@
+# See https://help.github.com/articles/ignoring-files/ for more about ignoring files.
+
+# dependencies
+/prepare/back/node_modules
+/prepare/front/node_modules
+/prepare/front_back/node_modules
+/front_back/node_modules
+/back/node_modules
+/front/node_modules
+/node_modules
+/.pnp
+.pnp.js
+
+#upload image files
+/prepare/back/uploads/*
+
+# testing
+/coverage
+
+# production
+/build
+
+# misc
+.DS_Store
+.env.local
+.env.development.local
+.env.test.local
+.env.production.local
+
+npm-debug.log*
+yarn-debug.log*
+yarn-error.log*
+
+
+#API KEY
+.env
+.envtext
+
+#eslint , prettierrc
+#.eslintrc
+.prettierrc
+.next
+
+#key
+node_modules
+.env
+.next
+=======
