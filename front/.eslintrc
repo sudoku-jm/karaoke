@@ -1,52 +1,51 @@
 {
-  "parser": "babel-eslint", //bable이 해석해서 최신문법도 에러를 발생시키지 않게 한다.
-  "parserOptions": {
-    "ecmaVersion": 2020,
-    "sourceType": "module",
-    "ecmaFeatures": {
-      "jsx": true
-    }
-  },
-  "env": {
-    "browser": true,
-    "node": true,
-    "es6" : true
-  },
-  // "extends": ["eslint:recommended", "plugin:react/recommended"],
-  "extends": [
-    "airbnb"
-    // "plugin:prettier/recommended"
-  ],    //airbnb가 스타일 규칙을 엄격하게 규제한다.
-  // "plugins": ["import", "react-hooks"],
-  "plugins": [
-    "import",
-    "react-hooks",
-    "jsx-a11y"
-  ],
-  "rules": {
-    "jsx-a11y/label-has-associated-control": "off",
-    "jsx-a11y/anchor-is-valid": "off",
-    "no-console": "off",
-    "no-alert":"off",
-    "no-underscore-dangle": "off",
-    "react/forbid-prop-types": "off",
-    "react/prop-types": "off",
-    "react/jsx-filename-extension": "off",
-    "react/jsx-one-expression-per-line": "off",
-    "react/jsx-wrap-multilines": "off",
-    "react/no-array-index-key": "off",
-    "object-curly-newline": "off",
-    "linebreak-style": "off",
-    "arrow-body-style": "off",
-    "comma-dangle": "off",
-    "consistent-return": "off",
-    "operator-linebreak": "off",
-    "react/function-component-definition" : "off",
-    "jsx-a11y/no-noninteractive-element-interactions" : "off",
-    "jsx-a11y/click-events-have-key-events" : "off",
-    "eslint no-use-before-define" : "off",
-    "default-param-last": "off",
-    "max-len" : "off",
-    "react/jsx-props-no-spreading" : "off"
-  }
+	"parser": "babel-eslint", //bable이 해석해서 최신문법도 에러를 발생시키지 않게 한다.
+	"parserOptions": {
+		"ecmaVersion": 2020,
+		"sourceType": "module",
+		"ecmaFeatures": {
+			"jsx": true
+		}
+	},
+	"env": {
+		"browser": true,
+		"node": true,
+		"es6": true
+	},
+	// "extends": ["eslint:recommended", "plugin:react/recommended"],
+	"extends": [
+		"airbnb",
+		"node_modules"
+		// "plugin:prettier/recommended"
+	], //airbnb가 스타일 규칙을 엄격하게 규제한다.
+	"include": ["next-env.d.ts", "**/*.ts", "**/*.tsx"],
+	// "plugins": ["import", "react-hooks"],
+	"plugins": ["import", "react-hooks", "jsx-a11y"],
+	"compilerOptions": {},
+	"rules": {
+		"jsx-a11y/label-has-associated-control": "off",
+		"jsx-a11y/anchor-is-valid": "off",
+		"no-console": "off",
+		"no-alert": "off",
+		"no-underscore-dangle": "off",
+		"react/forbid-prop-types": "off",
+		"react/prop-types": "off",
+		"react/jsx-filename-extension": "off",
+		"react/jsx-one-expression-per-line": "off",
+		"react/jsx-wrap-multilines": "off",
+		"react/no-array-index-key": "off",
+		"object-curly-newline": "off",
+		"linebreak-style": "off",
+		"arrow-body-style": "off",
+		"comma-dangle": "off",
+		"consistent-return": "off",
+		"operator-linebreak": "off",
+		"react/function-component-definition": "off",
+		"jsx-a11y/no-noninteractive-element-interactions": "off",
+		"jsx-a11y/click-events-have-key-events": "off",
+		"eslint no-use-before-define": "off",
+		"default-param-last": "off",
+		"max-len": "off",
+		"react/jsx-props-no-spreading": "off"
+	}
 }
