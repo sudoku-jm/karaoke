@@ -186,51 +186,56 @@ router.post("/insertBoard", async (req, res, next) => {
         console.log("/music/insert=================================[START]");
         //카테고리 아이디가 빈값으로 왔을 경우, 카테고리 이름 = 카테고리 DB 검사 후 같은게 있을 경우 CategoryId 매칭. 없으면 빈값.
         let cateId = "";
-        if (req.body.categoryId == "") {
-            return res.status(202).json({
-                msg: "카테고리 아이디가 없습니다.",
-            });
-        } else {
+        let category = {};
+        if (req.body.categoryId !== "") {
             //카테고리 아이디가 빈값이 아닐 때
             cateId = req.body.categoryId;
-        }
-
-        //카테고리 기존 게시물에 존재할 때
-        const category = await Category.findOne({
-            where: {
-                id: cateId,
-            },
-            attributes: {
-                exclude: ["createdAt", "updatedAt", "deletedAt"],
-            },
-            raw: true,
-        });
-
-        let singerId = "";
-        if (req.body.singerId == "") {
-            return res.status(202).json({
-                msg: "가수 데이터 아이디가 없습니다.",
+            //카테고리 기존 게시물에 존재할 때
+            category = await Category.findOne({
+                where: {
+                    id: cateId,
+                },
+                attributes: {
+                    exclude: ["createdAt", "updatedAt", "deletedAt"],
+                },
+                raw: true,
             });
         } else {
-            //가수 아이디가 빈값이 아닐 때
-            singerId = req.body.singerId;
+            // return res.status(202).json({
+            //     msg: "카테고리 아이디가 없습니다.",
+            // });
         }
 
-        //기존 가수가 존재할 때
-        const singer = await Singer.findOne({
-            where: {
-                id: singerId,
-            },
-            attributes: {
-                exclude: ["createdAt", "updatedAt", "deletedAt"],
-            },
-            raw: true,
-        });
+        let singerId = "";
+        let singer = {};
+        if (req.body.singerId !== "") {
+            //가수 아이디가 빈값이 아닐 때
+            singerId = req.body.singerId;
+            //기존 가수가 존재할 때
+            singer = await Singer.findOne({
+                where: {
+                    id: singerId,
+                },
+                attributes: {
+                    exclude: ["createdAt", "updatedAt", "deletedAt"],
+                },
+                raw: true,
+            });
+        } else {
+            // return res.status(202).json({
+            //     msg: "가수 데이터 아이디가 없습니다.",
+            // });
+        }
 
-        //기존에 있을 때
-        if (category !== undefined && singer !== undefined) {
-            let form = {
-                // category: req.body.categoryName,
+        let form = {};
+
+        console.log("category", category);
+        console.log("singer", singer);
+
+        // 카테고리와 기수가 기존에 있을 때
+        if (category !== null && Object.keys(singer).length !== 0) {
+            form = {
+                b_category: category.name,
                 b_title: req.body.title,
                 b_singer: singer.name,
                 b_e_singer: singer.e_name,
@@ -245,19 +250,37 @@ router.post("/insertBoard", async (req, res, next) => {
                 MusicId: req.body.musicId !== "" ? req.body.musicId : null,
                 SingerId: singerId,
             };
-
-            // 게시글 추가.
-            await Board.create({ ...form, raw: true });
-
-            res.status(200).json({
-                msg: "SUCCESS",
-            });
         } else {
             //새로 만들 때
-            return res.status(202).json({
-                msg: "카테고리 아이디가 없습니다. 관리자에게 카테고리 생성을 요청하세요.",
-            });
+            // return res.status(202).json({
+            //     msg: "카테고리 아이디가 없습니다. 관리자에게 카테고리 생성을 요청하세요.",
+            // });
+
+            form = {
+                b_category: req.body.categoryName,
+                b_title: req.body.title,
+                b_singer: req.body.singerName,
+                b_e_singer: req.body.singerEName,
+                b_j_singer: req.body.singerJName,
+                b_keumyong: req.body.keumyong,
+                b_taejin: req.body.taejin,
+                b_link: req.body.link,
+                b_contents: req.body.contents,
+                b_tags: req.body.tags,
+                new: req.body.new,
+                CategoryId: category !== null ? cateId : null,
+                MusicId: req.body.musicId !== "" ? req.body.musicId : null, //수정시 존재
+                SingerId: Object.keys(singer).length !== 0 ? singerId : null,
+            };
         }
+
+        // 게시글 추가.
+        console.log("form================", form);
+        await Board.create({ ...form, raw: true });
+
+        res.status(200).json({
+            msg: "SUCCESS",
+        });
 
         console.log("/music/insert=================================[END]");
     } catch (error) {
@@ -308,7 +331,7 @@ router.get("/getBoardList", async (req, res, next) => {
                     attributes: ["name", "e_name", "j_name"],
                 },
             ],
-            raw: true,
+            // raw: true,
         });
 
         console.log("boardList", boardList);

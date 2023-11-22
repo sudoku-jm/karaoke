@@ -13,6 +13,10 @@ module.exports = (sequelize, DataTypes) => {
             //   type: DataTypes.STRING(20), //20글자이하 제한
             //   allowNull: false,
             // },
+            b_category: {
+                type: DataTypes.STRING(20), //20글자이하 제한
+                allowNull: true,
+            },
             b_title: {
                 type: DataTypes.STRING(50), //50글자이하 제한
                 allowNull: false,
