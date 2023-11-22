@@ -2,6 +2,7 @@ const express = require("express");
 const cors = require("cors");
 const http = require("http");
 const MusicRouter = require("./routers/music");
+const AdminRouter = require("./routers/admin");
 const db = require("./models");
 const dotenv = require("dotenv");
 
@@ -34,6 +35,7 @@ app.use(express.urlencoded({ extended: true }));
 
 //라우터 분리
 app.use("/music", MusicRouter);
+app.use("/admin", AdminRouter);
 
 app.get("/", (req, res) => {
     res.send("hello express");
