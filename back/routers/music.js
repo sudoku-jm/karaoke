@@ -1,5 +1,12 @@
 const express = require("express");
-const { Board, Category, Singer, sequelize } = require("../models");
+const {
+    Board,
+    Category,
+    Singer,
+    sequelize,
+    Music,
+    Sequelize,
+} = require("../models");
 const { Op } = require("sequelize");
 const { removeSpecialCharacters, includesSearch } = require("../func/form");
 const router = express.Router();
@@ -180,17 +187,31 @@ router.post("/searchSinger", async (req, res, next) => {
     }
 });
 
-//music/insertMusic : 노래방 곡 추가|수정 신청.
+//music/insertBoard : 노래방 곡 추가|수정 신청.
 router.post("/insertBoard", async (req, res, next) => {
     try {
         console.log("/music/insert=================================[START]");
-        //카테고리 아이디가 빈값으로 왔을 경우, 카테고리 이름 = 카테고리 DB 검사 후 같은게 있을 경우 CategoryId 매칭. 없으면 빈값.
+
+        //필수 값 체크
+        if (req.body.singerId == "" && req.body.singerName == "") {
+            return res.status(202).json({
+                msg: "가수 이름은 필수 입니다.",
+            });
+        }
+
+        if (req.body.categoryId == "" && req.body.categoryName == "") {
+            return res.status(202).json({
+                msg: "카테고리명은 필수 입니다.",
+            });
+        }
+
+        //카테고리 아이디
         let cateId = "";
         let category = {};
         if (req.body.categoryId !== "") {
             //카테고리 아이디가 빈값이 아닐 때
             cateId = req.body.categoryId;
-            //카테고리 기존 게시물에 존재할 때
+            //카테고리 기존 게시물에 존재할 때.
             category = await Category.findOne({
                 where: {
                     id: cateId,
@@ -200,12 +221,8 @@ router.post("/insertBoard", async (req, res, next) => {
                 },
                 raw: true,
             });
-        } else {
-            // return res.status(202).json({
-            //     msg: "카테고리 아이디가 없습니다.",
-            // });
         }
-
+        //가수 아이디
         let singerId = "";
         let singer = {};
         if (req.body.singerId !== "") {
@@ -221,40 +238,82 @@ router.post("/insertBoard", async (req, res, next) => {
                 },
                 raw: true,
             });
-        } else {
-            // return res.status(202).json({
-            //     msg: "가수 데이터 아이디가 없습니다.",
-            // });
         }
 
         let form = {};
+        let musicData = {};
 
-        console.log("category", category);
-        console.log("singer", singer);
-
-        // 카테고리와 기수가 기존에 있을 때
-        if (category !== null && Object.keys(singer).length !== 0) {
+        /** 새글 작성 */
+        if (req.body.new == "Y") {
             form = {
-                b_category: category.name,
+                b_category: req.body.categoryName,
                 b_title: req.body.title,
-                b_singer: singer.name,
-                b_e_singer: singer.e_name,
-                b_j_singer: singer.j_name,
+                b_singer: req.body.singerName,
+                b_e_singer: req.body.singerEName,
+                b_j_singer: req.body.singerJName,
                 b_keumyong: req.body.keumyong,
                 b_taejin: req.body.taejin,
                 b_link: req.body.link,
                 b_contents: req.body.contents,
                 b_tags: req.body.tags,
-                new: req.body.new,
-                CategoryId: cateId,
-                MusicId: req.body.musicId !== "" ? req.body.musicId : null,
-                SingerId: singerId,
+                new: "Y",
+                CategoryId: Object.keys(category).length !== 0 ? cateId : null,
+                MusicId: null,
+                SingerId: Object.keys(singer).length !== 0 ? singerId : null,
             };
-        } else {
-            //새로 만들 때
-            // return res.status(202).json({
-            //     msg: "카테고리 아이디가 없습니다. 관리자에게 카테고리 생성을 요청하세요.",
-            // });
+
+            if (req.body.title == "") {
+                //제목 필수
+                return res.status(202).json({
+                    msg: "파라미터 오류. 제목 필수",
+                });
+            }
+            if (req.body.keumyong == "" && req.body.taejin == "") {
+                //둘다 빈값 안됨
+                return res.status(202).json({
+                    msg: "파라미터 오류. 노래방 번호 필수",
+                });
+            }
+
+            if (Object.keys(category).length !== 0 && category !== null) {
+                //카테고리 값이 있을 때
+                form.b_category = category.name;
+            }
+
+            if (Object.keys(singer).length !== 0 && singer !== null) {
+                //가수 값이 있을 때
+                form.b_singer = singer.name;
+                form.b_e_singer = singer.e_name;
+                form.b_j_singer = singer.j_name;
+            } else if (
+                Object.keys(singer).length == 0 &&
+                singer == null &&
+                req.body.singerName == ""
+            ) {
+                //가수 값도 없고, 가수이름 작성도 안했을 때 안됨
+                return res.status(202).json({
+                    msg: "파라미터 오류. 가수 정보가 없습니다.",
+                });
+            }
+        }
+
+        /** 수정 작성 */
+        if (req.body.new == "N") {
+            if (req.body.musicId == "") {
+                return res.status(202).json({
+                    msg: "파라미터 오류. (수정시 musicId 필수)",
+                });
+            }
+
+            musicData = await Music.findOne({
+                where: {
+                    id: req.body.musicId,
+                },
+                attributes: {
+                    exclude: ["createdAt", "deletedAt"],
+                },
+                raw: true,
+            });
 
             form = {
                 b_category: req.body.categoryName,
@@ -268,17 +327,44 @@ router.post("/insertBoard", async (req, res, next) => {
                 b_contents: req.body.contents,
                 b_tags: req.body.tags,
                 new: req.body.new,
-                CategoryId: category !== null ? cateId : null,
-                MusicId: req.body.musicId !== "" ? req.body.musicId : null, //수정시 존재
+                CategoryId: Object.keys(category).length !== 0 ? cateId : null,
+                MusicId: req.body.musicId,
                 SingerId: Object.keys(singer).length !== 0 ? singerId : null,
             };
+
+            //카테고리
+            if (cateId !== "" && req.body.categoryName !== "") {
+                form.b_category = req.body.categoryName;
+            } else if (
+                Object.keys(category).length !== 0 &&
+                category !== null
+            ) {
+                //카테고리 값이 있을 때
+                form.b_category = category.name;
+            }
+
+            //가수
+            if (singerId !== "" && req.body.singerName !== "") {
+                form.b_singer = req.body.singerName;
+                form.b_e_singer = req.body.singerEName;
+                form.b_j_singer = req.body.singerJNam;
+            } else if (Object.keys(singer).length !== 0 && singer !== null) {
+                //가수 값이 있을 때
+                form.b_singer = singer.name;
+                form.b_e_singer = singer.e_name;
+                form.b_j_singer = singer.j_name;
+            }
         }
 
         // 게시글 추가.
-        console.log("form================", form);
+        console.log("form333================", form);
         await Board.create({ ...form, raw: true });
 
         res.status(200).json({
+            data: {
+                beforeData: musicData !== null ? musicData : "",
+                newData: form,
+            },
             msg: "SUCCESS",
         });
 
@@ -342,6 +428,111 @@ router.get("/getBoardList", async (req, res, next) => {
         });
         console.log(
             "/music/getBoardList=================================[END]"
+        );
+    } catch (error) {
+        console.log(error);
+        next(error);
+    }
+});
+
+//음악 검색 리스트
+//music/searchMusicList
+router.get("/searchMusicList", async (req, res, next) => {
+    try {
+        console.log(
+            "/music/searchMusicList=================================[START]"
+        );
+
+        const searchStr = req.query.searchStr;
+        // if (searchStr == "") {
+        //     return res.status(202).json({
+        //         msg: "검색어는 필수입니다.",
+        //     });
+        // }
+
+        const MusicData = await Music.findAll({
+            where: {
+                [Op.or]: [
+                    {
+                        title: {
+                            [Op.like]: `%${searchStr}%`,
+                        },
+                    },
+                    {
+                        keumyong: {
+                            [Op.like]: `%${searchStr}%`,
+                        },
+                    },
+                    {
+                        taejin: {
+                            [Op.like]: `%${searchStr}%`,
+                        },
+                    },
+                    {
+                        "$Singer.name$": {
+                            [Op.like]: `%${searchStr}%`,
+                        },
+                    },
+                    {
+                        "$Singer.e_name$": {
+                            [Op.like]: `%${searchStr}%`,
+                        },
+                    },
+                    {
+                        "$Singer.j_name$": {
+                            [Op.like]: `%${searchStr}%`,
+                        },
+                    },
+                    {
+                        "$Category.name$": {
+                            [Op.like]: `%${searchStr}%`,
+                        },
+                    },
+                ],
+            },
+            limit: 10,
+            include: [
+                {
+                    model: Singer,
+                    attributes: {
+                        incluse: ["name", "e_name", "j_name"],
+                        exclude: [
+                            "createdAt",
+                            "updatedAt",
+                            "deletedAt",
+                            "s_delYN",
+                        ],
+                    },
+                    required: false, // 연결된 값이 없어도 가져오기
+                },
+                {
+                    model: Category,
+                    attributes: {
+                        incluse: ["name"],
+                        exclude: [
+                            "createdAt",
+                            "updatedAt",
+                            "deletedAt",
+                            "c_delYN",
+                        ],
+                    },
+                    required: false, // 연결된 값이 없어도 가져오기
+                },
+            ],
+            attributes: {
+                exclude: ["createdAt", "updatedAt", "deletedAt"],
+            },
+            raw: true,
+        });
+
+        console.log("MusicData", MusicData);
+
+        res.status(200).json({
+            data: MusicData,
+            msg: "SUCCESS",
+        });
+        console.log(
+            "/music/searchMusicList=================================[END]"
         );
     } catch (error) {
         console.log(error);

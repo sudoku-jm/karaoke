@@ -1,4 +1,6 @@
 const wanakana = require("wanakana");
+const { Music } = require("../models");
+const { Op } = require("sequelize");
 
 const removeSpecialCharacters = (inputString) => {
     // 특수문자를 제거하는 정규 표현식
@@ -70,4 +72,31 @@ const includesSearch = (writeStr, originStr) => {
     };
 };
 
-module.exports = { removeSpecialCharacters, includesSearch };
+//금영,태진 번호로 Music데이터 가져오기
+const musicFindAllByNumber = async (keumyong, taejin) => {
+    let data = await Music.findAll({
+        where: {
+            [Op.or]: [
+                {
+                    keumyong: keumyong == "" ? "KEUMYONG" : keumyong,
+                },
+                {
+                    taejin: taejin == "" ? "TAEJIN" : taejin,
+                },
+            ],
+        },
+        attributes: {
+            exclude: ["createdAt", "updatedAt", "deletedAt"],
+        },
+        raw: true,
+    });
+    if (data) {
+        return data;
+    }
+};
+
+module.exports = {
+    removeSpecialCharacters,
+    includesSearch,
+    musicFindAllByNumber,
+};

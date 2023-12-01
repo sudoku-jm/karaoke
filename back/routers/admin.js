@@ -1,7 +1,7 @@
 const express = require("express");
 const { Board, Category, Singer, sequelize, Music } = require("../models");
 const { Op } = require("sequelize");
-const { includesSearch } = require("../func/form");
+const { includesSearch, musicFindAllByNumber } = require("../func/form");
 const router = express.Router();
 
 // 가수 추가
@@ -104,11 +104,24 @@ router.post("/insertCategory", async (req, res, next) => {
             "/admin/insertCategory=================================[START]"
         );
 
-        if (req.body.name == "") {
+        if (req.body.name == "" && req.body.boardId == "") {
             return res.status(202).json({
                 msg: "카테고리명은 필수입니다.",
             });
         }
+
+        let cateName = req.body.name;
+
+        if (req.body.boardId !== "") {
+            const boardData = await Board.findOne({
+                where: {
+                    id: req.body.boardId,
+                },
+            });
+
+            cateName = boardData.b_category;
+        }
+
         const categoryList = await Category.findAll({
             where: {},
             attributes: {
@@ -118,13 +131,13 @@ router.post("/insertCategory", async (req, res, next) => {
         });
 
         let dataList = categoryList.find((c) => {
-            const str = includesSearch(req.body.name, c.name);
+            const str = includesSearch(cateName, c.name);
             return str.partialMatch || str.includesTxt;
         });
 
         if (dataList == undefined || dataList == "") {
             const data = await Category.create({
-                name: req.body.name,
+                name: cateName,
                 attributes: {
                     exclude: ["createdAt", "updatedAt", "deletedAt"],
                 },
@@ -177,27 +190,25 @@ router.post("/insertMusic", async (req, res, next) => {
                 if (boardData.new == "Y") {
                     //신규 추가 요청일 때
 
-                    const beforeData = await Music.findAll({
-                        where: {
-                            [Op.or]: [
-                                {
-                                    keumyong: boardData.b_keumyong,
-                                },
-                                {
-                                    taejin: boardData.b_taejin,
-                                },
-                            ],
-                        },
-                        attributes: {
-                            exclude: ["createdAt", "updatedAt", "deletedAt"],
-                        },
-                        raw: true,
-                    });
+                    if (
+                        boardData.b_keumyong == "" &&
+                        boardData.b_taejin == ""
+                    ) {
+                        return res.status(202).json({
+                            msg: "음원 번호가 빈값입니다.",
+                        });
+                    }
+
+                    //금영,태진 번호로 Music데이터 가져오기
+                    const beforeData = await musicFindAllByNumber(
+                        boardData.b_keumyong,
+                        boardData.b_taejin
+                    );
 
                     if (beforeData.length > 0) {
                         return res.status(202).json({
                             data: beforeData,
-                            msg: "음원 데이터가 이미 존재합니다.",
+                            msg: "요청 번호로 음원 데이터가 이미 존재합니다. 수정 시 음원 수정요청 작성을 해주세요.",
                         });
                     } else {
                         form = {
@@ -220,14 +231,46 @@ router.post("/insertMusic", async (req, res, next) => {
                             },
                             raw: true,
                         });
+
+                        const insertedMusicData = await Music.findOne({
+                            where: {
+                                id: newMusicData.id,
+                            },
+                            include: [
+                                {
+                                    model: Category,
+                                    attributes: ["name"],
+                                },
+                                {
+                                    model: Singer,
+                                    attributes: ["name", "e_name", "j_name"],
+                                },
+                            ],
+                            attributes: {
+                                exclude: [
+                                    "createdAt",
+                                    "updatedAt",
+                                    "deletedAt",
+                                ],
+                            },
+                        });
+
                         res.status(200).json({
-                            data: newMusicData,
+                            data: insertedMusicData,
                             msg: "SUCCESS",
                             msg2: "추가완료",
                         });
                     }
                 } else if (boardData.new == "N") {
                     //기존에 음악이 있는지 검사.
+
+                    console.log("boardData====", boardData);
+
+                    if (boardData.MusicId == "" || boardData.MusicId == null) {
+                        return res.status(202).json({
+                            msg: "파라미터 오류. (수정시 musicId 필수)",
+                        });
+                    }
 
                     const musicData = await Music.findOne({
                         where: {
