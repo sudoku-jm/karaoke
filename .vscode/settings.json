@@ -1,49 +1,49 @@
 {
-    "auto-close-tag.enableAutoCloseTag": true,
-    "auto-close-tag.enableAutoCloseSelfClosingTag": true,
-    "editor.fontSize": 13,
-    "editor.renderWhitespace": "all",
-    "editor.wordWrap": "on",
-    "editor.fontFamily": "D2Coding,Consolas, 'Courier New', monospace",
-    "workbench.iconTheme": "material-icon-theme",
-    "[html]": {},
-    "workbench.colorTheme": "Night Owl",
-    "explorer.compactFolders": false,
-    "liveSassCompile.settings.formats": [
-        {
-            "format": "expanded",
-            "extensionName": ".css",
-            "savePath": "~/../css/"
-        },
-        {
-            "format": "compressed",
-            "extensionName": ".min.css",
-            "savePath": "~/../css/"
-        }
-    ],
-    "files.exclude": {
-        "**/.classpath": true,
-        "**/.project": true,
-        "**/.settings": true,
-        "**/.factorypath": true
+  "auto-close-tag.enableAutoCloseTag": true,
+  "auto-close-tag.enableAutoCloseSelfClosingTag": true,
+  "editor.fontSize": 13,
+  "editor.renderWhitespace": "all",
+  "editor.wordWrap": "on",
+  "editor.fontFamily": "D2Coding,Consolas, 'Courier New', monospace",
+  "workbench.iconTheme": "material-icon-theme",
+  "[html]": {},
+  "workbench.colorTheme": "Night Owl",
+  "explorer.compactFolders": false,
+  "liveSassCompile.settings.formats": [
+    {
+      "format": "expanded",
+      "extensionName": ".css",
+      "savePath": "~/../css/"
     },
-    "editor.suggestSelection": "first",
-    // "editor.defaultFormatter": "dbaeumer.vscode-eslint",
-    "editor.defaultFormatter": "esbenp.prettier-vscode",
-    "javascript.updateImportsOnFileMove.enabled": "always",
-    "window.zoomLevel": -1,
-    "vetur.validation.style": false,
-    "editor.codeActionsOnSave": {
-        // "source.fixAll": true,
-        "source.fixAll.eslint": true
-    },
-    "eslint.enable": true,
-    "eslint.validate": ["javascript", "javascriptreact"],
-    //import 빨간줄 생기는 현상 수정
-    "eslint.codeAction.showDocumentation": {
-        "enable": true
-    },
-    "editor.formatOnSave": true,
-    "eslint.alwaysShowStatus": true,
-    "javascript.format.enable": false
+    {
+      "format": "compressed",
+      "extensionName": ".min.css",
+      "savePath": "~/../css/"
+    }
+  ],
+  "files.exclude": {
+    "**/.classpath": true,
+    "**/.project": true,
+    "**/.settings": true,
+    "**/.factorypath": true
+  },
+  "editor.suggestSelection": "first",
+  // "editor.defaultFormatter": "dbaeumer.vscode-eslint",
+  "editor.defaultFormatter": "esbenp.prettier-vscode",
+  "javascript.updateImportsOnFileMove.enabled": "always",
+  "window.zoomLevel": -2,
+  "vetur.validation.style": false,
+  "editor.codeActionsOnSave": {
+    // "source.fixAll": true,
+    "source.fixAll.eslint": true
+  },
+  "eslint.enable": true,
+  "eslint.validate": ["javascript", "javascriptreact"],
+  //import 빨간줄 생기는 현상 수정
+  "eslint.codeAction.showDocumentation": {
+    "enable": true
+  },
+  "editor.formatOnSave": true,
+  "eslint.alwaysShowStatus": true,
+  "javascript.format.enable": false
 }
