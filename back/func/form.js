@@ -1,5 +1,5 @@
 const wanakana = require("wanakana");
-const { Music, Tag, Singer, Category } = require("../models");
+const { Music, Tag, Singer, Category, MusicTag } = require("../models");
 const { Op } = require("sequelize");
 
 const removeSpecialCharacters = (inputString) => {
@@ -121,6 +121,7 @@ const musicTagFindBySearchStr = async (where, searchStr) => {
           attributes: [],
         },
       },
+
       {
         model: Singer,
         attributes: {
@@ -138,8 +139,9 @@ const musicTagFindBySearchStr = async (where, searchStr) => {
         required: false, // 연결된 값이 없어도 가져오기
       },
     ],
-    // raw: true,
+    // raw: true, //true할경우 같은 아이디 리스트 중복으로 내려옴
   });
+
   return MusicData;
 };
 
@@ -165,7 +167,7 @@ const arrayFilterSameData = (AList, BList, filterColum) => {
 };
 
 //해시태그 저장, 음악 - 태그간 관계 데이터 추가
-const createUpdateMusicTag = async (type, tags) => {
+const createUpdateMusicTag = async (type, tags, createMusic) => {
   const hashtags = tags.match(/#[^\s#]+/g); //해시태그 찾는 정규표현식
 
   if (hashtags) {
@@ -183,7 +185,7 @@ const createUpdateMusicTag = async (type, tags) => {
     );
     switch (type) {
       case "CREATE":
-        await newMusicData.addTag(tagResult.map((v) => v[0]));
+        await createMusic.addTag(tagResult.map((v) => v[0]));
         break;
       case "UPDATE":
         //수정한 음악의 id를 들고와서 다시 tag 관계성 저장.

@@ -8,6 +8,8 @@ const {
   Sequelize,
   Tag,
   Hit,
+  Link,
+  MusicTag,
 } = require("../models");
 const { Op } = require("sequelize");
 const {
@@ -512,14 +514,70 @@ router.get("/searchMusicList", async (req, res, next) => {
 
     const tagMusicDataList = await musicTagFindBySearchStr(where, searchStr);
 
-    const combinedArray = arrayFilterSameData(
-      MusicData,
-      tagMusicDataList,
-      "id"
+    let combinedArray = JSON.stringify(
+      arrayFilterSameData(MusicData, tagMusicDataList, "id"),
+      null,
+      2
     );
 
+    combinedArray = JSON.parse(combinedArray);
+
+    let result;
+    if (combinedArray.length > 0) {
+      try {
+        // Promise.all 사용
+        result = await Promise.all(
+          combinedArray.map(async (item) => {
+            try {
+              const foundLink = await Link.findAll({
+                where: {
+                  MusicId: item.id,
+                },
+                attributes: {
+                  exclude: ["createdAt", "updatedAt", "deletedAt", "MusicId"],
+                },
+                raw: true,
+              });
+
+              // link 데이터를 찾았을 때만 추가
+              if (foundLink.length > 0) {
+                item.linkList = foundLink;
+              }
+
+              const tagList = await Music.findAll({
+                where: {
+                  id: item.id,
+                },
+                include: [
+                  {
+                    model: Tag,
+                    through: MusicTag, // through 속성을 통해 MusicTag 테이블을 지정
+                    attributes: ["id", "name"], // 가져올 태그의 속성을 지정
+                  },
+                ],
+                raw: true,
+              });
+
+              const tagNamesArray = tagList.map((music) => music["Tags.name"]);
+
+              if (tagNamesArray.length > 0) {
+                item.Tags = tagNamesArray;
+              }
+
+              return item; // Promise.all에서 반환할 값으로 각 item을 반환
+            } catch (error) {
+              console.error("Error finding link:", error);
+              throw error; // 에러 발생시에는 Promise.all이 중단되도록 에러를 다시 throw
+            }
+          })
+        );
+      } catch (error) {
+        console.error("Error in Promise.all:", error);
+      }
+    }
+
     res.status(200).json({
-      data: combinedArray,
+      data: result,
       msg: "SUCCESS",
     });
     console.log("/music/searchMusicList=================================[END]");

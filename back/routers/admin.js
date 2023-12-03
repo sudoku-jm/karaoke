@@ -7,6 +7,7 @@ const {
   Music,
   Tag,
   MusicTag,
+  Link,
 } = require("../models");
 const { Op } = require("sequelize");
 const {
@@ -230,7 +231,24 @@ router.post("/insertMusic", async (req, res, next) => {
             });
 
             //tag 찾기==================================
-            createUpdateMusicTag("CREATE", boardData.b_tags);
+            createUpdateMusicTag("CREATE", boardData.b_tags, newMusicData);
+
+            //link넣기 ===============================
+            const links = boardData.b_link.split(",");
+            Promise.all(
+              links.map(async (link) => {
+                // 링크가 https://로 시작하지 않으면 추가하지 않음
+                if (!link.startsWith("https://")) {
+                  return res.status(202).json({
+                    msg: "링크는 https://로 시작해주세요",
+                  });
+                }
+                return await Link.create({
+                  src: link.replace(",", ""),
+                  MusicId: newMusicData.id,
+                });
+              })
+            );
 
             const insertedMusicData = await Music.findOne({
               where: {
