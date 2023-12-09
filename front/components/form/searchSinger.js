@@ -132,7 +132,7 @@ const SearchSinger = ({ onChangeForm }) => {
 	return (
 		<div>
 			<div>
-				{Object.keys(form.selectedSinger).length > 0 && (
+				{Object.keys(form.selectedSinger).length > 0 ? (
 					<div>
 						<p>{form.selectedSinger.name}</p>
 						<p>{form.selectedSinger.e_name}</p>
@@ -140,17 +140,17 @@ const SearchSinger = ({ onChangeForm }) => {
 
 						<button onClick={handleRemoveSelected}>삭제</button>
 					</div>
+				) : (
+					<input
+						type="text"
+						name="singerName"
+						value={form.singerName}
+						onChange={handleInput}
+						placeholder="가수 검색"
+						onKeyUp={handleEnter}
+					/>
 				)}
 			</div>
-
-			<input
-				type="text"
-				name="singerName"
-				value={form.singerName}
-				onChange={handleInput}
-				placeholder="가수 검색"
-				onKeyUp={handleEnter}
-			/>
 
 			{visible.searchSingerListVisible && (
 				<>

@@ -191,14 +191,16 @@ const SearchCategory = ({ onChangeForm }) => {
 					</>
 				)}
 			</div>
-			<input
-				type="text"
-				name="categoryName"
-				value={category.categoryName}
-				placeholder="카테고리 검색"
-				onChange={handleInput}
-				onKeyUp={handleEnter}
-			/>
+			{category.selectedCategory == "" && (
+				<input
+					type="text"
+					name="categoryName"
+					value={category.categoryName}
+					placeholder="카테고리 검색"
+					onChange={handleInput}
+					onKeyUp={handleEnter}
+				/>
+			)}
 
 			<div>
 				{visible.searchCateListVisible && (
