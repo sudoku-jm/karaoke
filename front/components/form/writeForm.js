@@ -18,7 +18,10 @@ const formInit = {
 	keumyong: "",
 	taejin: "",
 	link: "",
+	tags: "",
+	new: "",
 	contents: "",
+	musicId: "",
 };
 
 const WriteForm = ({ insertType }) => {
@@ -30,6 +33,27 @@ const WriteForm = ({ insertType }) => {
 		insertMusicError,
 	} = useSelector((state) => state.music);
 	const [insertForm, setInsertForm] = useState(formInit);
+	//작성 타입 폼 설정
+	useEffect(() => {
+		if (insertType !== undefined) {
+			let settingForm = formInit;
+			switch (insertType) {
+				case "NEW":
+					settingForm.new = "Y";
+					break;
+				case "MODIFT":
+					settingForm.new = "N";
+					settingForm.musicId = "";
+					break;
+				default:
+					break;
+			}
+		}
+		setInsertForm({
+			...insertForm,
+		});
+	}, [insertType]);
+
 	//요청 프로세스1  : 요청 버튼 클릭하면 요청API 호출
 	useEffect(() => {
 		if (insertWriteCall && insertWriteType !== null) {
@@ -60,7 +84,6 @@ const WriteForm = ({ insertType }) => {
 			<SearchSinger onChangeForm={setInsertForm} />
 			{/* 
 			<input type="text" name="title" placeholder="제목" />
-			<input type="text" name="singer" placeholder="가수" />
 			<input type="text" name="keumyong" placeholder="금영번호" />
 			<input type="text" name="taejin" placeholder="태진번호" />
 			<input type="text" name="link" placeholder="유튜브 MR링크" />

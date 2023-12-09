@@ -6,7 +6,6 @@ const SearchSinger = ({ onChangeForm }) => {
 	const dispatch = useDispatch();
 	const { searchSingerLoading, searchSingerDone, searchSingerList } =
 		useSelector((state) => state.music);
-	const [mount, setMount] = useState(false);
 	const [form, setForm] = useState({
 		singerName: "",
 		singerEName: "",
@@ -20,33 +19,28 @@ const SearchSinger = ({ onChangeForm }) => {
 
 	const getSinger = useCallback(
 		(name) => {
-			console.log("??", name);
-			console.log("mount??", mount);
 			if (name == "") {
 				setVisible({
 					...visible,
 					searchSingerListVisible: false,
 				});
 			}
-			if (mount) {
-				if (name !== "" && !searchSingerLoading) {
-					dispatch({
-						type: SEARCH_SINGER_REQUEST,
-						data: {
-							singerName: name,
-						},
-					});
-				}
+			if (name !== "" && !searchSingerLoading) {
+				dispatch({
+					type: SEARCH_SINGER_REQUEST,
+					data: {
+						singerName: name,
+					},
+				});
 			}
 		},
-		[mount, form.singerName],
+		[form.singerName],
 	);
 
 	//검색 결과
 	useEffect(() => {
 		if (searchSingerDone) {
 			console.log("/?searchSingerList", searchSingerList);
-			setMount(false);
 			setForm((prev) => ({
 				...prev,
 				singerList: searchSingerList !== null ? searchSingerList : [],
@@ -69,7 +63,6 @@ const SearchSinger = ({ onChangeForm }) => {
 			clearTimeout(timer);
 		}
 		const callAPI = () => {
-			setMount(true);
 			getSinger(form.singerName);
 		};
 		timer = setTimeout(callAPI, delay);
@@ -83,7 +76,6 @@ const SearchSinger = ({ onChangeForm }) => {
 	const handleEnter = useCallback(
 		(e) => {
 			if (e.code === "Enter") {
-				setMount(true);
 				getSinger(form.singerName);
 			}
 		},
@@ -136,8 +128,6 @@ const SearchSinger = ({ onChangeForm }) => {
 			singerJName: "",
 		}));
 	};
-
-	console.log("form??", form);
 
 	return (
 		<div>
