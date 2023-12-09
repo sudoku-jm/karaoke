@@ -77,9 +77,13 @@ router.post("/searchCategory", async (req, res, next) => {
 
     //카테고리 단어 검색
     if (categoryName !== "") {
-      let dataList = categoryList.find((c) => {
+      let dataList = [];
+      //연관 단어가 포함되면 list에 넣어서 반환
+      categoryList.find((c) => {
         const str = includesSearch(categoryName, c.name);
-        return str.partialMatch || str.includesTxt;
+        if (str.partialMatch || str.includesTxt) {
+          dataList.push(c);
+        }
       });
 
       if (dataList == undefined || dataList == false) {
@@ -147,18 +151,21 @@ router.post("/searchSinger", async (req, res, next) => {
     });
 
     if (singerList !== "") {
-      let dataList = singerList.find((s) => {
+      let dataList = [];
+      singerList.find((s) => {
         const strName = includesSearch(singerName, s.name);
         const strEName = includesSearch(singerName, s.e_name);
         const strJName = includesSearch(singerName, s.j_name);
-        return (
+        if (
           strName.partialMatch ||
           strName.includesTxt ||
           strEName.partialMatch ||
           strEName.includesTxt ||
           strJName.partialMatch ||
           strJName.includesTxt
-        );
+        ) {
+          dataList.push(s);
+        }
       });
 
       if (dataList == undefined || dataList == false) {

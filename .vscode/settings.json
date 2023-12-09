@@ -31,7 +31,7 @@
   // "editor.defaultFormatter": "dbaeumer.vscode-eslint",
   "editor.defaultFormatter": "esbenp.prettier-vscode",
   "javascript.updateImportsOnFileMove.enabled": "always",
-  "window.zoomLevel": -2,
+  "window.zoomLevel": -1,
   "vetur.validation.style": false,
   "editor.codeActionsOnSave": {
     // "source.fixAll": true,

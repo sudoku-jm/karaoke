@@ -2,19 +2,26 @@ import React, { useEffect, useState } from "react";
 import Menu from "../menu/Menu";
 import Top from "./top";
 import { useDispatch, useSelector } from "react-redux";
-import { INSERT_MUSIC_REQUEST, handleInsertReset } from "../../reducers/music";
+import { INSERT_BOARD_REQUEST, handleInsertReset } from "../../reducers/music";
+import SearchCategory from "./searchCategory";
+import board from "../../func/board";
+import SearchSinger from "./searchSinger";
 
 const formInit = {
-	category: "",
+	categoryId: "",
+	categoryName: "",
 	title: "",
-	singer: "",
+	singerId: "",
+	singerName: "",
+	singerEName: "",
+	singerJName: "",
 	keumyong: "",
 	taejin: "",
 	link: "",
 	contents: "",
 };
 
-const WriteForm = () => {
+const WriteForm = ({ insertType }) => {
 	const dispatch = useDispatch();
 	const {
 		insertWriteCall,
@@ -26,13 +33,17 @@ const WriteForm = () => {
 	//요청 프로세스1  : 요청 버튼 클릭하면 요청API 호출
 	useEffect(() => {
 		if (insertWriteCall && insertWriteType !== null) {
-			dispatch({
-				type: INSERT_MUSIC_REQUEST,
-				data: {
-					form: insertForm,
-					insertType: insertWriteType,
-				},
-			});
+			//정규식 체크
+			const result = board.ValidationInsertBoard(insertType, insertForm);
+			if (result) {
+				dispatch({
+					type: INSERT_BOARD_REQUEST,
+					data: {
+						form: insertForm,
+						insertType,
+					},
+				});
+			}
 		}
 	}, [insertWriteCall]);
 
@@ -44,10 +55,10 @@ const WriteForm = () => {
 	}, [insertMusicDone, insertMusicError]);
 	return (
 		<section>
-			<Top pageTitle="신곡 요청" insertType="NEW" />
-			<select name="category">
-				<option>카테고리</option>
-			</select>
+			<Top insertType={insertType} />
+			<SearchCategory onChangeForm={setInsertForm} />
+			<SearchSinger onChangeForm={setInsertForm} />
+			{/* 
 			<input type="text" name="title" placeholder="제목" />
 			<input type="text" name="singer" placeholder="가수" />
 			<input type="text" name="keumyong" placeholder="금영번호" />
@@ -57,9 +68,9 @@ const WriteForm = () => {
 				name="contents"
 				maxLength={150}
 				placeholder="뭘 검색하면 이 곡이 나오면 좋을지 제안좀 해주세요."
-			></textarea>
+			></textarea> */}
 
-			<Menu />
+			{/* <Menu /> */}
 		</section>
 	);
 };

@@ -21,7 +21,7 @@ const MainCon = () => {
 			<MainSearch />
 			<RankList />
 			<ButtonWrite handleWrite={handleWrite} />
-			{visible.visibleWriteForm && <WriteForm />}
+			{visible.visibleWriteForm && <WriteForm insertType="NEW" />}
 		</>
 	);
 };

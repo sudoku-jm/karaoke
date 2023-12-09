@@ -15,19 +15,19 @@ app.use(express.json());
 app.use(express.urlencoded({ extended: true }));
 
 db.sequelize
-    .sync()
-    .then(() => {
-        console.log("db 연결 성공");
-    })
-    .catch(console.error);
+  .sync()
+  .then(() => {
+    console.log("db 연결 성공");
+  })
+  .catch(console.error);
 
 //CORS 설정
 app.use(
-    cors({
-        // origin: ["http://localhost:3000"],
-        origin: "*",
-        credentials: true,
-    })
+  cors({
+    origin: ["http://localhost:3000"],
+    // origin: "*",
+    credentials: true,
+  })
 );
 
 app.use(express.json());
@@ -38,9 +38,9 @@ app.use("/music", MusicRouter);
 app.use("/admin", AdminRouter);
 
 app.get("/", (req, res) => {
-    res.send("hello express");
+  res.send("hello express");
 });
 
 app.listen(PORT, () => {
-    console.log("서버 실행 중");
+  console.log("서버 실행 중");
 });

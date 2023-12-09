@@ -55,8 +55,12 @@ router.post("/insertSinger", async (req, res, next) => {
     }
 
     //가수 전체 데이터 가지고 와서 비교
-    const singerList = await Singer.findAll({
-      where: {},
+    const dataList = await Singer.findAll({
+      where: {
+        name: form.name,
+        e_name: form.e_name,
+        j_name: form.j_name,
+      },
       attributes: {
         exclude: ["createdAt", "updatedAt", "deletedAt"],
       },
@@ -64,21 +68,21 @@ router.post("/insertSinger", async (req, res, next) => {
     });
 
     //기존 동일 이름 가수가 있는지 체크
-    let dataList = singerList.find((s) => {
-      const strName = includesSearch(form.name, s.name);
-      const strEName = includesSearch(form.e_name, s.e_name);
-      const strJName = includesSearch(form.j_name, s.j_name);
-      return (
-        strName.partialMatch ||
-        strName.includesTxt ||
-        strEName.partialMatch ||
-        strEName.includesTxt ||
-        strJName.partialMatch ||
-        strJName.includesTxt
-      );
-    });
+    // let dataList = singerList.find((s) => {
+    //   const strName = includesSearch(form.name, s.name);
+    //   const strEName = includesSearch(form.e_name, s.e_name);
+    //   const strJName = includesSearch(form.j_name, s.j_name);
+    //   return (
+    //     strName.partialMatch ||
+    //     strName.includesTxt ||
+    //     strEName.partialMatch ||
+    //     strEName.includesTxt ||
+    //     strJName.partialMatch ||
+    //     strJName.includesTxt
+    //   );
+    // });
 
-    if (dataList !== undefined) {
+    if (dataList.length > 0) {
       return res.status(202).json({
         data: dataList,
         msg: "가수 데이터가 이미 존재합니다.",
@@ -131,18 +135,20 @@ router.post("/insertCategory", async (req, res, next) => {
       cateName = boardData.b_category;
     }
 
-    const categoryList = await Category.findAll({
-      where: {},
+    const dataList = await Category.findAll({
+      where: {
+        name: cateName,
+      },
       attributes: {
         exclude: ["createdAt", "updatedAt", "deletedAt"],
       },
       raw: true,
     });
 
-    let dataList = categoryList.find((c) => {
-      const str = includesSearch(cateName, c.name);
-      return str.partialMatch || str.includesTxt;
-    });
+    // let dataList = categoryList.find((c) => {
+    //   const str = includesSearch(cateName, c.name);
+    //   return str.partialMatch || str.includesTxt;
+    // });
 
     if (dataList == undefined || dataList == "") {
       const data = await Category.create({
