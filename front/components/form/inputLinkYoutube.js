@@ -14,6 +14,10 @@ const InputLinkYoutube = ({ insertForm, onChangeForm }) => {
 		isFirstLink: true,
 	});
 
+	useEffect(() => {
+		handleDebouncedValidation(form.link, insertForm.link);
+	}, [form, insertForm.link]);
+
 	const handleDebouncedValidation = useDebouncedValidation(
 		(value, insetFormLinks) => {
 			if (!Validation.isEmpty(value)) {
@@ -39,30 +43,6 @@ const InputLinkYoutube = ({ insertForm, onChangeForm }) => {
 		500,
 	);
 
-	// const handleDebouncedIframe = useDebouncedValidation((value) => {
-	// 	const innerHtmlElement = `<div
-	// 	dangerouslySetInnerHTML={{
-	// 		__html: ${youtubeParser(value)},
-	// 	}}
-	// 	></div>`;
-
-	// 	setIframeYoutube(innerHtmlElement);
-	// }, 500);
-
-	useEffect(() => {
-		handleDebouncedValidation(form.link, insertForm.link);
-	}, [form, insertForm.link]);
-
-	// useEffect(() => {
-	// 	if (!Validation.isEmpty(form.link)) {
-	// 		if (isTrueFalse.isYoutubeLink) {
-	// 			handleDebouncedIframe(form.link);
-	// 		} else {
-	// 			setIframeYoutube("");
-	// 		}
-	// 	}
-	// }, [isTrueFalse.isYoutubeLink, form.link]);
-
 	//작성
 	const handleInput = useCallback((e) => {
 		const { name, value, type, checked } = e.target;
@@ -81,6 +61,7 @@ const InputLinkYoutube = ({ insertForm, onChangeForm }) => {
 		}));
 	}, []);
 
+	//링크 추가
 	const handleAddLink = useCallback(() => {
 		const addLinks =
 			insertForm.link !== "" ? insertForm.link + "," + form.link : form.link;
@@ -101,6 +82,33 @@ const InputLinkYoutube = ({ insertForm, onChangeForm }) => {
 			links: textFromUniqueLinks,
 		}));
 	}, [form.link]);
+
+	//링크 삭제
+	const handleRemoveLink = useCallback(
+		(link) => {
+			console.log("insertForm.link,", insertForm.link);
+			console.log("link,", link);
+
+			const result = insertForm.link
+				.split(",")
+				.filter((t) => t.trim() !== link.trim());
+
+			console.log("result", result);
+
+			const textFromUniqueLinks = result.join(",");
+
+			onChangeForm((prev) => ({
+				...prev,
+				link: textFromUniqueLinks,
+			}));
+
+			setForm((prev) => ({
+				...prev,
+				links: textFromUniqueLinks,
+			}));
+		},
+		[insertForm.link],
+	);
 
 	return (
 		<>
@@ -143,13 +151,16 @@ const InputLinkYoutube = ({ insertForm, onChangeForm }) => {
 			)}
 			{!Validation.isEmpty(insertForm.link) &&
 				insertForm.link.split(",").map((item, idx) => (
-					<div
-						key={idx}
-						className="link-lists"
-						dangerouslySetInnerHTML={{
-							__html: youtubeParser(item),
-						}}
-					></div>
+					<>
+						<div
+							key={idx}
+							className="link-lists"
+							dangerouslySetInnerHTML={{
+								__html: youtubeParser(item),
+							}}
+						></div>
+						<button onClick={() => handleRemoveLink(item)}>삭제</button>
+					</>
 				))}
 		</>
 	);
