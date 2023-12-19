@@ -1,140 +1,140 @@
 import { all, fork, put, takeLatest, throttle, call } from "redux-saga/effects";
 import axios from "axios";
 import {
-	SEARCH_CATEGORY_FAILURE,
-	SEARCH_CATEGORY_REQUEST,
-	SEARCH_CATEGORY_SUCCESS,
-	INSERT_BOARD_FAILURE,
-	INSERT_BOARD_REQUEST,
-	INSERT_BOARD_SUCCESS,
-	GET_CATEGORY_REQUEST,
-	GET_CATEGORY_SUCCESS,
-	GET_CATEGORY_FAILURE,
-	SEARCH_SINGER_REQUEST,
-	SEARCH_SINGER_SUCCESS,
-	SEARCH_SINGER_FAILURE,
+    SEARCH_CATEGORY_FAILURE,
+    SEARCH_CATEGORY_REQUEST,
+    SEARCH_CATEGORY_SUCCESS,
+    INSERT_BOARD_FAILURE,
+    INSERT_BOARD_REQUEST,
+    INSERT_BOARD_SUCCESS,
+    GET_CATEGORY_REQUEST,
+    GET_CATEGORY_SUCCESS,
+    GET_CATEGORY_FAILURE,
+    SEARCH_SINGER_REQUEST,
+    SEARCH_SINGER_SUCCESS,
+    SEARCH_SINGER_FAILURE,
 } from "../reducers/music";
 
 // 추가/수정 요청글 작성
 function insertBoardAPI(data) {
-	return axios.post("/music/insertBoard", data.form);
+    return axios.post("/music/insertBoard", data.form);
 }
 
 function* insertBoard(action) {
-	try {
-		const result = yield call(insertBoardAPI, action.data);
-		console.log("insertBoardAPI result", result);
-		if (result.status == 200) {
-			yield put({
-				type: INSERT_BOARD_SUCCESS,
-				data: result.data,
-			});
-		} else {
-			yield put({
-				type: INSERT_BOARD_FAILURE,
-				error: result.response,
-			});
-		}
-	} catch (err) {
-		yield put({
-			type: INSERT_BOARD_FAILURE,
-			error: err,
-		});
-	}
+    try {
+        const result = yield call(insertBoardAPI, action.data);
+        console.log("insertBoardAPI result", result);
+        if (result.status == 200) {
+            yield put({
+                type: INSERT_BOARD_SUCCESS,
+                data: result.data.data,
+            });
+        } else {
+            yield put({
+                type: INSERT_BOARD_FAILURE,
+                error: result.response,
+            });
+        }
+    } catch (err) {
+        yield put({
+            type: INSERT_BOARD_FAILURE,
+            error: err,
+        });
+    }
 }
 
 //카테고리 검색 및 리스트 가져오기
 function searchCategoryAPI(data) {
-	return axios.post("/music/searchCategory", data);
+    return axios.post("/music/searchCategory", data);
 }
 
 function* searchCategory(action) {
-	try {
-		const result = yield call(searchCategoryAPI, action.data);
-		console.log("searchCategoryAPI result", result);
-		if (result.status == 200) {
-			yield put({
-				type: SEARCH_CATEGORY_SUCCESS,
-				data: result.data.data,
-			});
-		} else {
-			yield put({
-				type: SEARCH_CATEGORY_FAILURE,
-				error: result.response,
-			});
-		}
-	} catch (err) {
-		console.error(err);
-	}
+    try {
+        const result = yield call(searchCategoryAPI, action.data);
+        console.log("searchCategoryAPI result", result);
+        if (result.status == 200) {
+            yield put({
+                type: SEARCH_CATEGORY_SUCCESS,
+                data: result.data.data,
+            });
+        } else {
+            yield put({
+                type: SEARCH_CATEGORY_FAILURE,
+                error: result.response,
+            });
+        }
+    } catch (err) {
+        console.error(err);
+    }
 }
 
 //카테고리 리스트 전체 가져오기
 function getCategoryAPI(data) {
-	return axios.get("/music/getCategoryList", data);
+    return axios.get("/music/getCategoryList", data);
 }
 
 function* getCategory() {
-	try {
-		const result = yield call(getCategoryAPI);
-		console.log("getCategoryAPI result", result);
-		if (result.status == 200) {
-			yield put({
-				type: GET_CATEGORY_SUCCESS,
-				data: result.data,
-			});
-		} else {
-			yield put({
-				type: GET_CATEGORY_FAILURE,
-				error: result.response,
-			});
-		}
-	} catch (err) {
-		console.error(err);
-	}
+    try {
+        const result = yield call(getCategoryAPI);
+        console.log("getCategoryAPI result", result);
+        if (result.status == 200) {
+            yield put({
+                type: GET_CATEGORY_SUCCESS,
+                data: result.data,
+            });
+        } else {
+            yield put({
+                type: GET_CATEGORY_FAILURE,
+                error: result.response,
+            });
+        }
+    } catch (err) {
+        console.error(err);
+    }
 }
 
 //가수 검색 및 리스트 가져오기
 function searchSingerAPI(data) {
-	return axios.post("/music/searchSinger", data);
+    return axios.post("/music/searchSinger", data);
 }
 
 function* searchSinger(action) {
-	try {
-		const result = yield call(searchSingerAPI, action.data);
-		console.log("searchSingerAPI result", result);
-		if (result.status == 200) {
-			yield put({
-				type: SEARCH_SINGER_SUCCESS,
-				data: result.data.data,
-			});
-		} else {
-			yield put({
-				type: SEARCH_SINGER_FAILURE,
-				error: result.response,
-			});
-		}
-	} catch (err) {
-		console.error(err);
-	}
+    try {
+        const result = yield call(searchSingerAPI, action.data);
+        console.log("searchSingerAPI result", result);
+        if (result.status == 200) {
+            yield put({
+                type: SEARCH_SINGER_SUCCESS,
+                data: result.data.data,
+            });
+        } else {
+            yield put({
+                type: SEARCH_SINGER_FAILURE,
+                error: result.response,
+            });
+        }
+    } catch (err) {
+        console.error(err);
+    }
 }
 
 //watch
 function* watchInsertMusic() {
-	yield takeLatest(INSERT_BOARD_REQUEST, insertBoard);
+    yield takeLatest(INSERT_BOARD_REQUEST, insertBoard);
 }
 function* watchSearchCategory() {
-	yield takeLatest(SEARCH_CATEGORY_REQUEST, searchCategory);
+    yield takeLatest(SEARCH_CATEGORY_REQUEST, searchCategory);
 }
 function* watchgetCategory() {
-	yield takeLatest(GET_CATEGORY_REQUEST, getCategory);
+    yield takeLatest(GET_CATEGORY_REQUEST, getCategory);
 }
 function* watchSearchSinger() {
-	yield takeLatest(SEARCH_SINGER_REQUEST, searchSinger);
+    yield takeLatest(SEARCH_SINGER_REQUEST, searchSinger);
 }
 
 export default function* musicSaga() {
-	yield all([fork(watchInsertMusic)]);
-	yield all([fork(watchSearchCategory)]);
-	yield all([fork(watchgetCategory)]);
-	yield all([fork(watchSearchSinger)]);
+    yield all([fork(watchInsertMusic)]);
+    yield all([fork(watchSearchCategory)]);
+    yield all([fork(watchgetCategory)]);
+    yield all([fork(watchSearchSinger)]);
 }
