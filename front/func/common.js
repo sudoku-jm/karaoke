@@ -56,4 +56,20 @@ const debounce = (func, delay) => {
         }, delay);
     };
 };
-export { Validation, debounce };
+
+//쿼리스트링API
+const queryStringFunc = (params) => {
+    return (
+        Object.keys(params)
+            // .filter((key) => params[key] !== "") // 빈 값을 필터링
+            .map(
+                (key) =>
+                    `${encodeURIComponent(key)}=${encodeURIComponent(
+                        params[key]
+                    )}`
+            )
+            .join("&")
+    );
+};
+
+export { Validation, debounce, queryStringFunc };

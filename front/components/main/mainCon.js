@@ -5,6 +5,7 @@ import ButtonWrite from "../form/buttonWrite";
 import WriteForm from "../form/writeForm";
 import { useDispatch } from "react-redux";
 import { INSERT_BOARD_RESET } from "../../reducers/music";
+import Link from "next/link";
 
 const MainCon = () => {
     const dispatch = useDispatch();
@@ -27,6 +28,7 @@ const MainCon = () => {
             <MainSearch />
             <RankList />
             <ButtonWrite handleWrite={handleWrite} />
+            <Link href="/board">요청리스트</Link>
             {visible.visibleWriteForm && <WriteForm insertType="NEW" />}
         </>
     );

@@ -13,7 +13,11 @@ import {
     SEARCH_SINGER_REQUEST,
     SEARCH_SINGER_SUCCESS,
     SEARCH_SINGER_FAILURE,
+    GET_BOARD_LIST_SUCCESS,
+    GET_BOARD_LIST_FAILURE,
+    GET_BOARD_LIST_REQUEST,
 } from "../reducers/music";
+import { queryStringFunc } from "../func/common";
 
 // 추가/수정 요청글 작성
 function insertBoardAPI(data) {
@@ -118,6 +122,32 @@ function* searchSinger(action) {
     }
 }
 
+//요청리스트 가져오기
+function boardListAPI(lastId) {
+    console.log("data.lastId ", lastId);
+    return axios.get(`/music/getBoardList?lastId=${lastId || 0}`);
+}
+
+function* boardList(action) {
+    try {
+        const result = yield call(boardListAPI, action.lastId);
+        console.log("boardListAPI result", result);
+        if (result.status == 200) {
+            yield put({
+                type: GET_BOARD_LIST_SUCCESS,
+                data: result.data.data,
+            });
+        } else {
+            yield put({
+                type: GET_BOARD_LIST_FAILURE,
+                error: result.response,
+            });
+        }
+    } catch (err) {
+        console.error(err);
+    }
+}
+
 //watch
 function* watchInsertMusic() {
     yield takeLatest(INSERT_BOARD_REQUEST, insertBoard);
@@ -131,10 +161,14 @@ function* watchgetCategory() {
 function* watchSearchSinger() {
     yield takeLatest(SEARCH_SINGER_REQUEST, searchSinger);
 }
+function* watchBoardList() {
+    yield throttle(200, GET_BOARD_LIST_REQUEST, boardList);
+}
 
 export default function* musicSaga() {
     yield all([fork(watchInsertMusic)]);
     yield all([fork(watchSearchCategory)]);
     yield all([fork(watchgetCategory)]);
     yield all([fork(watchSearchSinger)]);
+    yield all([fork(watchBoardList)]);
 }

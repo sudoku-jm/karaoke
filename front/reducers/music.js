@@ -18,6 +18,11 @@ export const initalState = {
     searchSingerDone: false,
     searchSingerError: null,
     searchSingerList: null,
+    getBoardListLoading: false,
+    getBoardListDone: false,
+    getBoardListError: null,
+    getBoardList: [],
+    hasMoreBoardList: true, //더이상 불러올게 없을 경우 false
 };
 
 //곡 쓰기 요청 클릭
@@ -55,6 +60,11 @@ export const SEARCH_CATEGORY_FAILURE = "SEARCH_CATEGORY_FAILURE";
 export const SEARCH_SINGER_REQUEST = "SEARCH_SINGER_REQUEST";
 export const SEARCH_SINGER_SUCCESS = "SEARCH_SINGER_SUCCESS";
 export const SEARCH_SINGER_FAILURE = "SEARCH_SINGER_FAILURE";
+
+//요청 리스트 가져오기
+export const GET_BOARD_LIST_REQUEST = "GET_BOARD_LIST_REQUEST";
+export const GET_BOARD_LIST_SUCCESS = "GET_BOARD_LIST_SUCCESS";
+export const GET_BOARD_LIST_FAILURE = "GET_BOARD_LIST_FAILURE";
 
 const reducer = (state = initalState, action) => {
     return produce(state, (d) => {
@@ -130,6 +140,24 @@ const reducer = (state = initalState, action) => {
                 draft.searchSingerDone = false;
                 draft.searchSingerList = null;
                 draft.searchSingerError = action.error;
+                break;
+            //요청 리스트 가져오기
+            case GET_BOARD_LIST_REQUEST:
+                draft.getBoardListLoading = true;
+                draft.getBoardListDone = false;
+                break;
+            case GET_BOARD_LIST_SUCCESS:
+                draft.getBoardListLoading = false;
+                draft.getBoardListDone = true;
+                draft.getBoardList = draft.getBoardList.concat(action.data);
+                console.log("draft.getBoardList", draft.getBoardList.length);
+                draft.hasMoreBoardList = action.data.length === 10;
+                break;
+            case GET_BOARD_LIST_FAILURE:
+                draft.getBoardListLoading = false;
+                draft.getBoardListDone = true;
+                draft.getBoardListError = action.error;
+                draft.getBoardList = null;
                 break;
             default:
                 break;
