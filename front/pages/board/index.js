@@ -6,6 +6,8 @@ import { GET_BOARD_LIST_REQUEST } from "../../reducers/music";
 import wrapper from "../../store/configureStore";
 import { END } from "redux-saga";
 import axios from "axios";
+import { BoardRequestListStyle } from "../../style/ContentStyle";
+import AppLayout from "../../components/AppLayout";
 
 const index = () => {
     const { getBoardListLoading, hasMoreBoardList, getBoardList } = useSelector(
@@ -24,32 +26,54 @@ const index = () => {
     }, [inView, hasMoreBoardList, getBoardListLoading, getBoardList]);
 
     return (
-        <>
-            <h3>곡 추가/수정 요청 리스트</h3>
-            <dl>
-                <dt>
-                    <span>카테고리</span>
-                    <span>제목</span>
-                    <span>가수</span>
-                    <span>금영번호</span>
-                    <span>태진번호</span>
-                    <span>태그</span>
-                    <span>유튜브 링크</span>
-                    <span>의견</span>
-                    <span>-</span>
-                </dt>
-                {getBoardList !== null &&
-                    getBoardList.map((board) => {
-                        return (
-                            <BoardListRequest board={board} key={board.id} />
-                        );
-                    })}
-            </dl>
+        <AppLayout>
+            <BoardRequestListStyle>
+                <h3>곡 추가/수정 요청 리스트</h3>
+                <table>
+                    <colgroup>
+                        <col style={{width:"auto;"}}/>
+                        <col style={{width:"auto;"}}/>
+                        <col style={{width:"auto;"}}/>
+                        <col style={{width:"auto;"}}/>
+                        <col style={{width:"auto;"}}/>
+                        <col style={{width:"auto;"}}/>
+                        <col style={{width:"10%;"}}/>
+                        <col style={{width:"auto;"}}/>
+                        <col style={{width:"auto;"}}/>
+                    </colgroup>
+                    <thead>
+                        <tr>
+                            <th>요청</th>
+                            <th>카테고리</th>
+                            <th>제목</th>
+                            <th>가수</th>
+                            <th>금영번호</th>
+                            <th>태진번호</th>
+                            <th>태그</th>
+                            <th>유튜브 링크</th>
+                            <th>의견</th>
+                            <th>-</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+
+                    {getBoardList !== null &&
+                        getBoardList.map((board) => {
+                            return (
+                                <BoardListRequest
+                                board={board}
+                                key={board.id}
+                                />
+                                );
+                            })}
+                    </tbody>
+                </table>
+            </BoardRequestListStyle>
             <div
                 ref={hasMoreBoardList && !getBoardListLoading ? ref : undefined}
                 style={{ height: 10, background: "red" }}
             ></div>
-        </>
+        </AppLayout>
     );
 };
 

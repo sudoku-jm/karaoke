@@ -51,7 +51,7 @@ const board = {
     },
 };
 
-const youtubeParser = (youtubeUrl) => {
+const youtubeParser = (youtubeUrl, w, h) => {
     const getVideoIdFromShortUrl = (url) => {
         const urlObject = new URL(url);
         const pathSegments = urlObject.pathname.split("/");
@@ -76,7 +76,9 @@ const youtubeParser = (youtubeUrl) => {
 
     const container = `
     <div class="video-container">
-      <iframe width="560" height="315" src="https://www.youtube.com/embed/#ID#" title="YouTube video player"
+      <iframe width=${w !== undefined ? w : 560} height=${
+        h !== undefined ? h : 315
+    } src="https://www.youtube.com/embed/#ID#" title="YouTube video player"
         frameborder="0" allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture"
         allowfullscreen></iframe>
     </div>`;
