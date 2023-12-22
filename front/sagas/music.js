@@ -16,6 +16,9 @@ import {
     GET_BOARD_LIST_SUCCESS,
     GET_BOARD_LIST_FAILURE,
     GET_BOARD_LIST_REQUEST,
+    SEARCH_MUSIC_LIST_REQUREST,
+    SEARCH_MUSIC_LIST_SUCCESS,
+    SEARCH_MUSIC_LIST_FAILURE,
 } from "../reducers/music";
 import { queryStringFunc } from "../func/common";
 
@@ -124,7 +127,6 @@ function* searchSinger(action) {
 
 //요청리스트 가져오기
 function boardListAPI(lastId) {
-    console.log("data.lastId ", lastId);
     return axios.get(`/music/getBoardList?lastId=${lastId || 0}`);
 }
 
@@ -140,6 +142,31 @@ function* boardList(action) {
         } else {
             yield put({
                 type: GET_BOARD_LIST_FAILURE,
+                error: result.response,
+            });
+        }
+    } catch (err) {
+        console.error(err);
+    }
+}
+
+//음악 검색 리스트
+function searchMusicListAPI(schTxt) {
+    return axios.get(`/music/searchMusicList?searchStr=${schTxt || ""}`);
+}
+
+function* searchMusicList(action) {
+    try {
+        const result = yield call(searchMusicListAPI, action.schTxt);
+        console.log("searchMusicListAPI result", result);
+        if (result.status == 200) {
+            yield put({
+                type: SEARCH_MUSIC_LIST_SUCCESS,
+                data: result.data.data,
+            });
+        } else {
+            yield put({
+                type: SEARCH_MUSIC_LIST_FAILURE,
                 error: result.response,
             });
         }
@@ -164,6 +191,9 @@ function* watchSearchSinger() {
 function* watchBoardList() {
     yield throttle(200, GET_BOARD_LIST_REQUEST, boardList);
 }
+function* watchSearchMusicList() {
+    yield takeLatest(SEARCH_MUSIC_LIST_REQUREST, searchMusicList);
+}
 
 export default function* musicSaga() {
     yield all([fork(watchInsertMusic)]);
@@ -171,4 +201,5 @@ export default function* musicSaga() {
     yield all([fork(watchgetCategory)]);
     yield all([fork(watchSearchSinger)]);
     yield all([fork(watchBoardList)]);
+    yield all([fork(watchSearchMusicList)]);
 }

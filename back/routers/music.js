@@ -418,7 +418,7 @@ router.get("/getBoardList", async (req, res, next) => {
 
         const boardList = await Board.findAll({
             where,
-            limit: 10,
+            limit: 5,
             attributes: {
                 exclude: ["createdAt", "updatedAt", "deletedAt"],
             },
@@ -602,8 +602,11 @@ router.get("/searchMusicList", async (req, res, next) => {
                                 raw: true,
                             });
 
-                            const tagNamesArray = tagList.map(
-                                (music) => music["Tags.name"]
+                            console.log("tagList", tagList);
+                            const tagNamesArray = tagList.map((music) =>
+                                music["Tags.name"] !== null
+                                    ? music["Tags.name"]
+                                    : ""
                             );
 
                             if (tagNamesArray.length > 0) {
@@ -623,7 +626,7 @@ router.get("/searchMusicList", async (req, res, next) => {
         }
 
         res.status(200).json({
-            data: result,
+            data: result !== undefined ? result : [],
             msg: "SUCCESS",
         });
         console.log(

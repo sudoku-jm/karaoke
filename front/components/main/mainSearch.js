@@ -1,34 +1,82 @@
-import React, { useCallback, useState } from "react";
+import React, { useCallback, useEffect, useState } from "react";
 import useInput from "../../hooks/useInput";
+import { useDispatch } from "react-redux";
+import { Validation } from "../../func/common";
+import { useRouter } from "next/router";
+import { SEARCH_MUSIC_LIST_REQUREST } from "../../reducers/music";
 
 const MainSearch = () => {
-	const [schTxt, handleChange, setSchTxt] = useInput("");
+    const dispatch = useDispatch();
+    const router = useRouter();
+    const [schTxt, handleChange, setSchTxt] = useInput("");
+    // const [schFlag, setSchFlag] = useState(true);
 
-	//검색 클릭
-	const handleSubmit = (e) => {
-		if (
-			(e.type == "keyup" && e.code == "Enter") ||
-			(e.type == "click" && e.target.name == "schButton")
-		) {
-			//검색 API 호출
-			console.log("검색!");
-		}
-	};
+    // useEffect(() => {
+    //     const delayTime = 500;
+    //     let timer;
 
-	return (
-		<div>
-			<input
-				type="text"
-				value={schTxt}
-				name="sch-txt"
-				onChange={handleChange}
-				onKeyUp={handleSubmit}
-			/>
-			<button name="schButton" onClick={handleSubmit}>
-				검색
-			</button>
-		</div>
-	);
+    //     if (timer) {
+    //         clearTimeout(timer);
+    //     }
+
+    //     const refetch = () => {
+    //         dispatch({
+    //             type: SEARCH_MUSIC_LIST_REQUREST,
+    //             schTxt,
+    //         });
+    //     };
+
+    //     //검색 API 호출
+    //     if (!Validation.isEmpty(schTxt)) {
+    //         timer = setTimeout(refetch, delayTime);
+    //     }
+
+    //     return () => {
+    //         clearTimeout(timer);
+    //     };
+    // }, [schFlag]);
+
+    // //검색 클릭
+    // const handleSubmit = useCallback(
+    //     (e) => {
+    //         if (
+    //             (e.type == "keyup" && e.code == "Enter") ||
+    //             (e.type == "click" && e.target.name == "schButton")
+    //         ) {
+    //             setSchFlag(!schFlag);
+    //         }
+    //     },
+    //     [schTxt]
+    // );
+
+    const handleSubmit = useCallback(
+        (e) => {
+            if (
+                (e.type == "keyup" && e.code == "Enter") ||
+                (e.type == "click" && e.target.name == "schButton")
+            ) {
+                if (!Validation.isEmpty(schTxt)) {
+                    router.push(`/search/${schTxt}`);
+                }
+            }
+        },
+        [schTxt]
+    );
+
+    return (
+        <div>
+            <input
+                type="text"
+                value={schTxt}
+                name="sch-txt"
+                onChange={handleChange}
+                onKeyUp={handleSubmit}
+            />
+            <button name="schButton" onClick={handleSubmit}>
+                검색
+            </button>
+        </div>
+    );
 };
 
 export default MainSearch;

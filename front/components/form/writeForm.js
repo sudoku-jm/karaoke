@@ -69,11 +69,6 @@ const WriteForm = ({ insertType }) => {
         }
     }, [insertType]);
 
-    useEffect(() => {
-        //임시
-        console.log("insertForm!!!", insertForm);
-    }, [insertForm]);
-
     //요청 프로세스1  : 요청 버튼 클릭하면 요청API 호출
     useEffect(() => {
         if (insertWriteCall && insertWriteType !== null) {
@@ -99,7 +94,6 @@ const WriteForm = ({ insertType }) => {
     useEffect(() => {
         if (insertMusicDone || insertMusicError) {
             dispatch(handleInsertReset());
-            console.log("insertMusicResult", insertMusicResult);
             if (insertMusicResult !== null) {
                 setResultData({
                     beforeData: !Validation.isEmptyObject(
