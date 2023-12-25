@@ -1,5 +1,5 @@
 const wanakana = require("wanakana");
-const { Music, Tag, Singer, Category, MusicTag } = require("../models");
+const { Music, Tag, Singer, Category, MusicTag, Link } = require("../models");
 const { Op } = require("sequelize");
 
 const removeSpecialCharacters = (inputString) => {
@@ -186,6 +186,8 @@ const createUpdateMusicTag = async (type, tags, createMusic) => {
                 //findOrCreate : where로 검색 후 저장. 없을때만 등록 있으면 가져옴.
             )
         );
+
+        console.log("tagResult======", tagResult);
         switch (type) {
             case "CREATE":
                 await createMusic.addTag(tagResult.map((v) => v[0]));
@@ -201,6 +203,42 @@ const createUpdateMusicTag = async (type, tags, createMusic) => {
     }
 };
 
+const createUpdateLink = async (type, links, createMusic) => {
+    if (links !== undefined) {
+        console.log("links", links);
+        let res;
+        const linksList = links.split(",");
+        if (linksList.length > 0) {
+            const linkResult = await Promise.all(
+                linksList.map(async (l) => {
+                    // 링크가 https://로 시작하지 않으면 추가하지 않음
+                    if (!l.startsWith("https://")) {
+                        res.status(202).json({
+                            msg: "링크는 https://로 시작해주세요",
+                        });
+                        return res;
+                    } else {
+                        return Link.create({
+                            src: l.replace(",", ""),
+                            MusicId: createMusic.id,
+                        });
+                    }
+                })
+            );
+            console.log("linkResult==============", linkResult);
+
+            switch (type) {
+                case "CREATE":
+                    break;
+                case "UPDATE":
+                    break;
+                default:
+                    break;
+            }
+        }
+    }
+};
+
 module.exports = {
     removeSpecialCharacters,
     includesSearch,
@@ -208,4 +246,5 @@ module.exports = {
     musicTagFindBySearchStr,
     arrayFilterSameData,
     createUpdateMusicTag,
+    createUpdateLink,
 };
