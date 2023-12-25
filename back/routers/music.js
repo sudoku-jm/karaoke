@@ -436,8 +436,6 @@ router.get("/getBoardList", async (req, res, next) => {
             // raw: true,
         });
 
-        console.log("boardList", boardList);
-
         res.status(200).json({
             data: boardList,
             msg: "SUCCESS",
@@ -465,14 +463,53 @@ router.get("/searchMusicList", async (req, res, next) => {
         //         msg: "검색어는 필수입니다.",
         //     });
         // }
-
-        let where = {};
-        if (parseInt(req.query.lastId, 10)) {
-            // 초기 로딩이 아닐 때
-            where.id = { [Op.lt]: parseInt(req.query.lastId, 10) };
-        }
-
         const MusicData = await Music.findAll({
+            // where: Sequelize.or(
+            //     {
+            //         [Op.or]: [
+            //             {
+            //                 title: {
+            //                     [Op.like]: `%${searchStr}%`,
+            //                 },
+            //             },
+            //             {
+            //                 keumyong: {
+            //                     [Op.like]: `%${searchStr}%`,
+            //                 },
+            //             },
+            //             {
+            //                 taejin: {
+            //                     [Op.like]: `%${searchStr}%`,
+            //                 },
+            //             },
+            //             {
+            //                 "$Singer.name$": {
+            //                     [Op.like]: `%${searchStr}%`,
+            //                 },
+            //             },
+            //             {
+            //                 "$Singer.e_name$": {
+            //                     [Op.like]: `%${searchStr}%`,
+            //                 },
+            //             },
+            //             {
+            //                 "$Singer.j_name$": {
+            //                     [Op.like]: `%${searchStr}%`,
+            //                 },
+            //             },
+            //             {
+            //                 "$Category.name$": {
+            //                     [Op.like]: `%${searchStr}%`,
+            //                 },
+            //             },
+            //         ],
+            //     },
+            //     {
+            //         id: {
+            //             [Op.lt]: parseInt(req.query.lastId, 10),
+            //         },
+            //     }
+            // ),
             where: {
                 [Op.or]: [
                     {
@@ -512,8 +549,8 @@ router.get("/searchMusicList", async (req, res, next) => {
                     },
                 ],
             },
-            limit: 10,
-            //   order: [["createdAt", "DESC"]],
+            // limit: 10,
+            order: [["createdAt", "DESC"]],
             include: [
                 {
                     model: Singer,
@@ -547,6 +584,12 @@ router.get("/searchMusicList", async (req, res, next) => {
             },
             //   raw: true,
         });
+
+        let where = {};
+        if (parseInt(req.query.lastId, 10)) {
+            // 초기 로딩이 아닐 때
+            where.id = { [Op.lt]: parseInt(req.query.lastId, 10) };
+        }
 
         const tagMusicDataList = await musicTagFindBySearchStr(
             where,
@@ -602,7 +645,6 @@ router.get("/searchMusicList", async (req, res, next) => {
                                 raw: true,
                             });
 
-                            console.log("tagList", tagList);
                             const tagNamesArray = tagList.map((music) =>
                                 music["Tags.name"] !== null
                                     ? music["Tags.name"]
@@ -728,6 +770,90 @@ router.post("/hitMusic", async (req, res, next) => {
         }
 
         res.status(200).json({
+            msg: "SUCCESS",
+        });
+
+        //hit DB 추가
+    } catch (error) {}
+});
+
+//음악 정보
+router.get("/musicInfo", async (req, res, next) => {
+    try {
+        if (req.query.id == undefined && req.query.id == "") {
+            return res.status(202).json({
+                msg: "음악 정보가 없습니다.",
+            });
+        }
+
+        //음악 정보 1개
+        const resultData = await Music.findOne({
+            where: {
+                id: req.query.id,
+            },
+            include: [
+                {
+                    model: Tag,
+                    attributes: ["name"],
+                },
+                {
+                    model: Category,
+                    attributes: ["name"],
+                },
+                {
+                    model: Singer,
+                    attributes: ["name", "e_name", "j_name"],
+                },
+                {
+                    model: Hit,
+                    attributes: ["count"],
+                },
+                {
+                    model: Link,
+                    attributes: ["src"],
+                },
+            ],
+            attributes: {
+                exclude: ["createdAt", "deletedAt"],
+            },
+        });
+
+        //관련 태그 | 제목 연관 음악 정보
+
+        let where = {};
+        let musicArray = [];
+        if (parseInt(req.query.lastId, 10)) {
+            // 초기 로딩이 아닐 때
+            where.id = { [Op.lt]: parseInt(req.query.lastId, 10) };
+        }
+
+        if (resultData.Tags.length > 0) {
+            musicArray = await Promise.all(
+                resultData.Tags.map(async (tag) => {
+                    const result = await musicTagFindBySearchStr(
+                        where,
+                        tag.name
+                    );
+                    return result;
+                })
+            );
+        }
+
+        musicArray = [].concat(...musicArray);
+
+        const uniqueIdsSet = new Set();
+        let musicUniqDataList = [];
+
+        musicArray.forEach((item) => {
+            if (!uniqueIdsSet.has(item.id)) {
+                uniqueIdsSet.add(item.id);
+                console.log("item", item);
+                musicUniqDataList.push(item);
+            }
+        });
+
+        res.status(200).json({
+            data: { resultData, musicUniqDataList },
             msg: "SUCCESS",
         });
 

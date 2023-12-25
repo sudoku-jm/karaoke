@@ -1,5 +1,13 @@
 const wanakana = require("wanakana");
-const { Music, Tag, Singer, Category, MusicTag, Link } = require("../models");
+const {
+    Music,
+    Tag,
+    Singer,
+    Category,
+    MusicTag,
+    Link,
+    Board,
+} = require("../models");
 const { Op } = require("sequelize");
 
 const removeSpecialCharacters = (inputString) => {
@@ -98,7 +106,7 @@ const musicFindAllByNumber = async (keumyong, taejin) => {
 const musicTagFindBySearchStr = async (where, searchStr) => {
     const MusicData = await Music.findAll({
         where,
-        limit: 10,
+        // limit: 10,
         order: [["createdAt", "DESC"]],
         include: [
             {
@@ -239,6 +247,45 @@ const createUpdateLink = async (type, links, createMusic) => {
     }
 };
 
+const updateBoardMusicId = async (beforeData, newData) => {
+    let updateForm = {};
+    let searchForm = [];
+
+    //기존 데이터일경우
+    if (beforeData.length > 0) {
+        updateForm.MusicId = beforeData[0].id;
+        searchForm = [
+            {
+                b_keumyong: beforeData[0].keumyong,
+            },
+            {
+                b_taejin: beforeData[0].taejin,
+            },
+        ];
+    }
+
+    //새 데이터일경우
+    if (newData !== undefined) {
+        updateForm.MusicId = newData.id;
+        searchForm = [
+            {
+                b_keumyong: newData.keumyong,
+            },
+            {
+                b_taejin: newData.taejin,
+            },
+        ];
+    }
+
+    await Board.update(updateForm, {
+        where: {
+            [Op.or]: searchForm,
+        },
+        raw: true,
+        returning: true, // 업데이트된 데이터를 반환
+    });
+};
+
 module.exports = {
     removeSpecialCharacters,
     includesSearch,
@@ -247,4 +294,5 @@ module.exports = {
     arrayFilterSameData,
     createUpdateMusicTag,
     createUpdateLink,
+    updateBoardMusicId,
 };

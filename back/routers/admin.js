@@ -16,6 +16,7 @@ const {
     musicFindAllByNumber,
     createUpdateMusicTag,
     createUpdateLink,
+    updateBoardMusicId,
 } = require("../func/form");
 const router = express.Router();
 
@@ -247,11 +248,11 @@ router.post("/insertMusic", async (req, res, next) => {
         );
         /******** board에서 바로 음악 추가시 boardId있음****** */
         let form = {};
-        console.log("req???=====", req.body);
+        let boardData;
 
         if (req.body.boardId !== undefined && req.body.boardId !== "") {
             //boardId있음
-            const boardData = await Board.findOne({
+            boardData = await Board.findOne({
                 where: {
                     id: req.body.boardId,
                 },
@@ -281,6 +282,9 @@ router.post("/insertMusic", async (req, res, next) => {
                     );
 
                     if (beforeData.length > 0) {
+                        //요청 게시판 업데이트
+                        updateBoardMusicId(beforeData);
+
                         return res.status(202).json({
                             data: beforeData,
                             msg: "요청 번호로 음원 데이터가 이미 존재합니다. 수정 시 음원 수정요청 작성을 해주세요.",
@@ -347,6 +351,9 @@ router.post("/insertMusic", async (req, res, next) => {
                                 ],
                             },
                         });
+
+                        //요청 게시판 업데이트
+                        updateBoardMusicId(beforeData, newMusicData);
 
                         res.status(200).json({
                             data: insertedMusicData,
