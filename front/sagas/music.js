@@ -160,7 +160,11 @@ function searchMusicListAPI(data) {
 	// 		data.lastId || 0
 	// 	}`,
 	// );
-	return axios.get(`/music/searchMusicList?searchStr=${data.schTxt || ""}`);
+	return axios.get(
+		`/music/searchMusicList2?searchStr=${data.schTxt || ""}&lastId=${
+			data.lastId
+		}`,
+	);
 }
 
 function* searchMusicList(action) {

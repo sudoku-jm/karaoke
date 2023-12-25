@@ -26,7 +26,7 @@ export const initalState = {
 	searchMusicListLoading: false, //검색
 	searchMusicListDone: false,
 	searchMusicListError: null,
-	searchMusicList: null,
+	searchMusicList: [],
 	musicInfoLoading: false,
 	musicInfoDone: false,
 	musicInfoError: false,
@@ -171,8 +171,7 @@ const reducer = (state = initalState, action) => {
 				draft.getBoardListLoading = false;
 				draft.getBoardListDone = true;
 				draft.getBoardList = draft.getBoardList.concat(action.data);
-				console.log("action.data.length", action.data.length);
-				// draft.hasMoreBoardList = action.data.length === 10;
+				draft.hasMoreBoardList = action.data.length === 10;
 				break;
 			case GET_BOARD_LIST_FAILURE:
 				draft.getBoardListLoading = false;
@@ -183,17 +182,20 @@ const reducer = (state = initalState, action) => {
 			case SEARCH_MUSIC_LIST_REQUREST:
 				draft.searchMusicListLoading = true;
 				draft.searchMusicListDone = false;
+				// draft.searchMusicList = [];
 				break;
 			case SEARCH_MUSIC_LIST_SUCCESS:
 				draft.searchMusicListLoading = false;
 				draft.searchMusicListDone = true;
-				draft.searchMusicList = action.data;
-				draft.hasMoreBoardList = action.data.length === 5;
+				draft.searchMusicList = draft.searchMusicList.concat(action.data);
+				// draft.searchMusicList = [...action.data, ...draft.searchMusicList];
+				draft.hasMoreBoardList = action.data.length >= 5;
+
 				break;
 			case SEARCH_MUSIC_LIST_FAILURE:
 				draft.searchMusicListLoading = false;
 				draft.searchMusicListError = action.error;
-				draft.searchMusicList = null;
+				draft.searchMusicList = [];
 				break;
 			//음악 상세 정보
 			case MUSIC_INFO_REQUEST:

@@ -23,6 +23,8 @@ const MusicItem = ({ music, schTxt }) => {
 	};
 	return (
 		<div>
+			아이디 : {id}
+			<br />
 			카테고리 : {Category !== null ? Category.name : "-"}
 			<br />
 			제목 : {title}
