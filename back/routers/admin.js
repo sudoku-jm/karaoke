@@ -319,11 +319,17 @@ router.post("/insertMusic", async (req, res, next) => {
                         );
 
                         //link넣기 ===============================
-                        createUpdateLink(
+                        const linkResult = createUpdateLink(
                             "CREATE",
                             boardData.b_link,
                             newMusicData
                         );
+
+                        if (!linkResult) {
+                            res.status(202).json({
+                                msg: "링크는 https://로 시작해주세요",
+                            });
+                        }
 
                         const insertedMusicData = await Music.findOne({
                             where: {

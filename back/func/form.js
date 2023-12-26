@@ -105,14 +105,14 @@ const musicFindAllByNumber = async (keumyong, taejin) => {
 
 const musicTagFindBySearchStr = async (where, searchStr) => {
     const MusicData = await Music.findAll({
-        where,
+        // where,
         // limit: 10,
         order: [["createdAt", "DESC"]],
         include: [
             {
                 model: Tag,
                 attributes: {
-                    incluse: ["name"],
+                    include: ["name"],
                     exclude: ["createdAt", "updatedAt", "deletedAt"],
                 },
                 where: {
@@ -134,7 +134,7 @@ const musicTagFindBySearchStr = async (where, searchStr) => {
             {
                 model: Singer,
                 attributes: {
-                    incluse: ["name", "e_name", "j_name"],
+                    include: ["name", "e_name", "j_name"],
                     exclude: ["createdAt", "updatedAt", "deletedAt", "s_delYN"],
                 },
                 required: false, // 연결된 값이 없어도 가져오기
@@ -142,7 +142,7 @@ const musicTagFindBySearchStr = async (where, searchStr) => {
             {
                 model: Category,
                 attributes: {
-                    incluse: ["name"],
+                    include: ["name"],
                     exclude: ["createdAt", "updatedAt", "deletedAt", "c_delYN"],
                 },
                 required: false, // 연결된 값이 없어도 가져오기
@@ -163,22 +163,26 @@ const arrayFilterSameData = (AList, BList, filterColum) => {
         const obj2 = shorterArray.find(
             (obj) => obj[filterColum] === obj1[filterColum]
         );
+        // if (obj2) {
         if (obj2) {
             obj1.Tags = obj2.Tags || []; // obj2.Tags가 없다면 빈 배열로 초기화
             return false; // 중복되는 경우 필터링
         }
+
         return true; // 중복되지 않는 경우 유지
     });
 
     // shorterArray와 uniqueObjects를 합치기
     const combinedArray = [...shorterArray, ...uniqueObjects];
-    return combinedArray;
+    const sortedCombinedArray = combinedArray.sort((a, b) => b.id - a.id);
+    return sortedCombinedArray;
 };
 
 //해시태그 저장, 음악 - 태그간 관계 데이터 추가
 const createUpdateMusicTag = async (type, tags, createMusic) => {
     const hashtags = tags.match(/#[^\s#]+/g); //해시태그 찾는 정규표현식
 
+    console.log("hashtags", hashtags);
     if (hashtags) {
         const tagResult = await Promise.all(
             hashtags.map(
@@ -195,7 +199,7 @@ const createUpdateMusicTag = async (type, tags, createMusic) => {
             )
         );
 
-        console.log("tagResult======", tagResult);
+        // console.log("tagResult======", tagResult);
         switch (type) {
             case "CREATE":
                 await createMusic.addTag(tagResult.map((v) => v[0]));
@@ -212,18 +216,16 @@ const createUpdateMusicTag = async (type, tags, createMusic) => {
 };
 
 const createUpdateLink = async (type, links, createMusic) => {
-    if (links !== undefined) {
-        console.log("links", links);
+    if (links !== undefined || links !== "") {
         let res;
         const linksList = links.split(",");
         if (linksList.length > 0) {
             const linkResult = await Promise.all(
                 linksList.map(async (l) => {
                     // 링크가 https://로 시작하지 않으면 추가하지 않음
+
                     if (!l.startsWith("https://")) {
-                        res.status(202).json({
-                            msg: "링크는 https://로 시작해주세요",
-                        });
+                        res = false;
                         return res;
                     } else {
                         return Link.create({
@@ -233,7 +235,6 @@ const createUpdateLink = async (type, links, createMusic) => {
                     }
                 })
             );
-            console.log("linkResult==============", linkResult);
 
             switch (type) {
                 case "CREATE":

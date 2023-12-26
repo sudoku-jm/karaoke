@@ -84,7 +84,7 @@
 
     // vscode 기본설정에서 자동 저장 기능을 비활성화 하고 저장시 수행동작 기능 활성화.
     "editor.codeActionsOnSave": {
-        "source.fixAll.eslint": false
+        "source.fixAll.eslint": "never"
     },
 
     //Auto Save 속성은 다음의 값들을 가질 수 있습니다.
@@ -111,7 +111,7 @@
     //vscode 상태표시 줄 활성화 여부
     "workbench.statusBar.visible": true,
     "prettier.tabWidth": 4,
-    "window.zoomLevel": -3,
+    "window.zoomLevel": -2,
     "git.autofetch": true
 
     //Preferences > Settings > Import Module Specifier 항목을 non-relative 로 변경한다.위와 같이 변경할 경우 jsconfig.json, tsconfig.json 에서 정의한 baseUrl, paths 설정에 근거해 import된다.
