@@ -4,6 +4,7 @@ import { Validation } from "../../func/common";
 import { useDispatch, useSelector } from "react-redux";
 import { MUSIC_INFO_REQUEST } from "../../reducers/music";
 import { youtubeParser } from "../../func/board";
+import Link from "next/link";
 
 const MusicInfo = () => {
 	const router = useRouter();
@@ -11,9 +12,11 @@ const MusicInfo = () => {
 	const id = router.query?.musicId;
 	const { musicInfoDone, musicInfo } = useSelector((state) => state.music);
 	const [music, setMusic] = useState({});
-	const [musicList, setMusicList] = useState([]);
+	const [musicList, setMusicList] = useState({
+		tagCateList: [],
+		singerList: [],
+	});
 
-	console.log("id", id);
 	useEffect(() => {
 		if (!Validation.isEmpty(id) && id !== undefined) {
 			dispatch({
@@ -25,7 +28,10 @@ const MusicInfo = () => {
 	useEffect(() => {
 		if (musicInfoDone) {
 			setMusic(musicInfo.resultData);
-			setMusicList(musicInfo.musicUniqDataList);
+			setMusicList((prev) => ({
+				tagCateList: musicInfo.musicUniqDataList,
+				singerList: musicInfo.musicSingerList,
+			}));
 		}
 	}, [musicInfoDone]);
 	return (
@@ -34,9 +40,8 @@ const MusicInfo = () => {
 				<>
 					제목 : {music.title}
 					<br />
-					가수 : {music.Singer?.name} <br />
-					가수 : {music.Singer?.e_name} <br />
-					가수 : {music.Singer?.j_name}
+					가수 : {music.Singer?.name} | {music.Singer?.e_name} |{" "}
+					{music.Singer?.j_name}
 					<br />
 					keumyong : {music.keumyong}
 					<br />
@@ -62,26 +67,54 @@ const MusicInfo = () => {
 					<br />
 					조회수 : {music.Hit}
 					마지막 업데이트 {music.updatedAt}
-					<h3>연관 음악</h3>
-					{musicList?.map((item) => (
-						<div key={item.id}>
-							제목 : {item.title}
-							<br />
-							가수 : {item.Singer?.name}
-							<br />
-							가수 : {item.Singer?.e_name}
-							<br />
-							가수 : {item.Singer?.j_name}
-							<br />
-							카테고리 : {item.Category?.name}
-							<br />
-							keumyong : {item.keumyong}
-							<br />
-							taejin : {item.taejin}
-							<br />
-							<br />
-						</div>
-					))}
+					{musicList.tagCateList?.length > 0 && (
+						<>
+							<h3>연관 음악</h3>
+							{musicList.tagCateList?.map((item) => (
+								<div key={item.id}>
+									제목 : {item.title}
+									<br />
+									가수 : {item.Singer?.name}
+									<br />
+									가수 : {item.Singer?.e_name}
+									<br />
+									가수 : {item.Singer?.j_name}
+									<br />
+									카테고리 : {item.Category?.name}
+									<br />
+									keumyong : {item.keumyong}
+									<br />
+									taejin : {item.taejin}
+									<br />
+									<Link href={`/music/${item.id}`}>상세보기</Link>
+								</div>
+							))}
+						</>
+					)}
+					{musicList.singerList?.length > 0 && (
+						<>
+							<h3>연관 가수 음악</h3>
+							{musicList.singerList?.map((item) => (
+								<div key={item.id}>
+									제목 : {item.title}
+									<br />
+									가수 : {item.Singer?.name}
+									<br />
+									가수 : {item.Singer?.e_name}
+									<br />
+									가수 : {item.Singer?.j_name}
+									<br />
+									카테고리 : {item.Category?.name}
+									<br />
+									keumyong : {item.keumyong}
+									<br />
+									taejin : {item.taejin}
+									<br />
+									<Link href={`/music/${item.id}`}>상세보기</Link>
+								</div>
+							))}
+						</>
+					)}
 				</>
 			)}
 		</div>

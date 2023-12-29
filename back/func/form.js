@@ -103,10 +103,13 @@ const musicFindAllByNumber = async (keumyong, taejin) => {
     }
 };
 
-const musicTagFindBySearchStr = async (where, searchStr) => {
+const musicTagFindBySearchStr = async (where, searchStr, limitData) => {
+    let limit = limitData !== undefined ? limitData : 0;
+
+    console.log("limitData", limitData);
     const MusicData = await Music.findAll({
         // where,
-        // limit: 10,
+        limit,
         order: [["createdAt", "DESC"]],
         include: [
             {
