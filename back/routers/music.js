@@ -1094,7 +1094,7 @@ router.get("/musicInfo", async (req, res, next) => {
             }
         });
 
-``        musicSingerArray.forEach((item) => {
+        musicSingerArray.forEach((item) => {
             if (req.query.id != item.id) {
                 musicSingerList.push(item);
             }
