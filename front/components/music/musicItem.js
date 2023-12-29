@@ -22,7 +22,7 @@ const MusicItem = ({ music, schTxt }) => {
 		router.push(`/music/${id}`);
 	};
 	return (
-		<div>
+		<div style={{ height: 500 }}>
 			아이디 : {id}
 			<br />
 			카테고리 : {Category !== null ? Category.name : "-"}
@@ -47,8 +47,8 @@ const MusicItem = ({ music, schTxt }) => {
 					{Tags.map(
 						(tag) =>
 							!Validation.isEmpty(tag) && (
-								<Link href={`/search/${tag}`} key={tag}>
-									#{tag}
+								<Link href={`/search/${tag.name}`} key={tag.id}>
+									#{tag.name}
 								</Link>
 							),
 					)}

@@ -171,7 +171,7 @@ const reducer = (state = initalState, action) => {
 				draft.getBoardListLoading = false;
 				draft.getBoardListDone = true;
 				draft.getBoardList = draft.getBoardList.concat(action.data);
-				draft.hasMoreBoardList = action.data.length === 10;
+				draft.hasMoreBoardList = action.data.length >= 5;
 				break;
 			case GET_BOARD_LIST_FAILURE:
 				draft.getBoardListLoading = false;

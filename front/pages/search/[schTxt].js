@@ -7,57 +7,32 @@ import { SEARCH_MUSIC_LIST_REQUREST } from "../../reducers/music";
 import MusicItem from "../../components/music/musicItem";
 import AppLayout from "../../components/AppLayout";
 import MainSearch from "../../components/main/mainSearch";
+import wrapper from "../../store/configureStore";
+import { END } from "redux-saga";
+import axios from "axios";
 
 const SearchResult = () => {
 	const router = useRouter();
 	const dispatch = useDispatch();
-	const {
-		searchMusicList,
-		searchMusicListDone,
-		hasMoreBoardList,
-		searchMusicListLoading,
-	} = useSelector((state) => state.music);
+	const { searchMusicList, hasMoreBoardList, searchMusicListLoading } =
+		useSelector((state) => state.music);
 	const [ref, inView] = useInView();
 	const { schTxt } = router.query;
-	const [schFlag, setSchFlag] = useState(false);
 
 	useEffect(() => {
-		let flag = schFlag ? schFlag : hasMoreBoardList;
-		if (
-			inView &&
-			flag &&
-			!searchMusicListLoading &&
-			!Validation.isEmpty(schTxt)
-		) {
-			let lastId;
-			if (searchMusicList.length > 0) {
-				lastId = searchMusicList[searchMusicList.length - 1]?.id;
-			} else {
-				lastId = 0;
-			}
+		if (inView && hasMoreBoardList && !searchMusicListLoading) {
+			let lastId = searchMusicList[searchMusicList.length - 1]?.id;
+
 			dispatch({
 				type: SEARCH_MUSIC_LIST_REQUREST,
 				data: { schTxt, lastId },
 			});
 		}
-	}, [
-		inView,
-		hasMoreBoardList,
-		searchMusicListLoading,
-		searchMusicList,
-		schTxt,
-		schFlag,
-	]);
-
-	useEffect(() => {
-		if (searchMusicListDone) {
-			setSchFlag(false);
-		}
-	}, [searchMusicListDone]);
+	}, [inView, hasMoreBoardList, searchMusicListLoading, searchMusicList]);
 
 	return (
 		<AppLayout>
-			<MainSearch setSchFlag={setSchFlag} />
+			<MainSearch queryString={schTxt} />
 			<div>
 				{searchMusicList.length > 0 && !searchMusicListLoading
 					? searchMusicList.map((music, idx) => (
@@ -68,10 +43,33 @@ const SearchResult = () => {
 
 			<div
 				ref={hasMoreBoardList && !searchMusicListLoading ? ref : undefined}
-				style={{ height: 100, background: "red" }}
+				style={{ height: 10, background: "red" }}
 			></div>
 		</AppLayout>
 	);
 };
+
+export const getServerSideProps = wrapper.getServerSideProps(
+	async (context) => {
+		const cookie = context.req ? context.req.headers.cookie : "";
+
+		axios.defaults.headers.Cookie = "";
+		if (context.req && cookie) {
+			axios.defaults.headers.Cookie = cookie;
+		}
+
+		context.store.dispatch({
+			type: SEARCH_MUSIC_LIST_REQUREST,
+			data: {
+				schTxt: context.query?.schTxt,
+			},
+		});
+
+		context.store.dispatch(END);
+		await context.store.sagaTask.toPromise();
+
+		return {};
+	},
+);
 
 export default SearchResult;

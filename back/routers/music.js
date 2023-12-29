@@ -703,144 +703,326 @@ router.get("/searchMusicList", async (req, res, next) => {
     }
 });
 
+// //음악 검색 리스트
+// //music/searchMusicList
+// router.get("/searchMusicList2", async (req, res, next) => {
+//     try {
+//         console.log(
+//             "/music/searchMusicList=================================[START]"
+//         );
+
+//         const searchStr = req.query.searchStr;
+
+//         let where = 0;
+//         if (parseInt(req.query.lastId, 10) > 0) {
+//             // 초기 로딩이 아닐 때
+//             where = {
+//                 [Op.and]: [
+//                     {
+//                         [Op.or]: [
+//                             {
+//                                 title: {
+//                                     [Op.like]: `%${searchStr}%`,
+//                                 },
+//                             },
+//                             {
+//                                 keumyong: {
+//                                     [Op.like]: `%${searchStr}%`,
+//                                 },
+//                             },
+//                             {
+//                                 taejin: {
+//                                     [Op.like]: `%${searchStr}%`,
+//                                 },
+//                             },
+//                             {
+//                                 "$Singer.name$": {
+//                                     [Op.like]: `%${searchStr}%`,
+//                                 },
+//                             },
+//                             {
+//                                 "$Singer.e_name$": {
+//                                     [Op.like]: `%${searchStr}%`,
+//                                 },
+//                             },
+//                             {
+//                                 "$Singer.j_name$": {
+//                                     [Op.like]: `%${searchStr}%`,
+//                                 },
+//                             },
+//                             {
+//                                 "$Category.name$": {
+//                                     [Op.like]: `%${searchStr}%`,
+//                                 },
+//                             },
+//                         ],
+//                     },
+//                     {
+//                         id: {
+//                             [Op.lt]: parseInt(req.query.lastId, 10),
+//                         },
+//                     },
+//                 ],
+//             };
+//         } else {
+//             where = {
+//                 [Op.and]: [
+//                     {
+//                         [Op.or]: [
+//                             {
+//                                 title: {
+//                                     [Op.like]: `%${searchStr}%`,
+//                                 },
+//                             },
+//                             {
+//                                 keumyong: {
+//                                     [Op.like]: `%${searchStr}%`,
+//                                 },
+//                             },
+//                             {
+//                                 taejin: {
+//                                     [Op.like]: `%${searchStr}%`,
+//                                 },
+//                             },
+//                             {
+//                                 "$Singer.name$": {
+//                                     [Op.like]: `%${searchStr}%`,
+//                                 },
+//                             },
+//                             {
+//                                 "$Singer.e_name$": {
+//                                     [Op.like]: `%${searchStr}%`,
+//                                 },
+//                             },
+//                             {
+//                                 "$Singer.j_name$": {
+//                                     [Op.like]: `%${searchStr}%`,
+//                                 },
+//                             },
+//                             {
+//                                 "$Category.name$": {
+//                                     [Op.like]: `%${searchStr}%`,
+//                                 },
+//                             },
+//                         ],
+//                     },
+//                 ],
+//             };
+//         }
+
+//         const MusicData = await Music.findAll({
+//             where,
+//             limit: 5,
+//             order: [["createdAt", "DESC"]],
+//             attributes: {
+//                 exclude: ["updatedAt", "deletedAt"],
+//             },
+//             include: [
+//                 {
+//                     model: Singer,
+//                     where: {
+//                         [Op.or]: [
+//                             {
+//                                 name: {
+//                                     [Op.like]: `%${searchStr}%`,
+//                                 },
+//                             },
+//                             {
+//                                 e_name: {
+//                                     [Op.like]: `%${searchStr}%`,
+//                                 },
+//                             },
+//                             {
+//                                 j_name: {
+//                                     [Op.like]: `%${searchStr}%`,
+//                                 },
+//                             },
+//                         ],
+//                     },
+//                     attributes: {
+//                         include: ["name", "e_name", "j_name"],
+//                         exclude: [
+//                             "createdAt",
+//                             "updatedAt",
+//                             "deletedAt",
+//                             "s_delYN",
+//                         ],
+//                     },
+//                     required: false, // 연결된 값이 없어도 가져오기
+//                 },
+//                 {
+//                     model: Category,
+//                     where: {
+//                         name: {
+//                             [Op.like]: `%${searchStr}%`,
+//                         },
+//                     },
+//                     attributes: {
+//                         include: ["name"],
+//                         exclude: [
+//                             "createdAt",
+//                             "updatedAt",
+//                             "deletedAt",
+//                             "c_delYN",
+//                         ],
+//                     },
+//                     required: false, // 연결된 값이 없어도 가져오기
+//                 },
+//             ],
+
+//             // raw: true,
+//         });
+
+//         console.log("lastId==============", req.query.lastId);
+//         let result;
+//         let combinedArray;
+
+//         // if (MusicData.length > 0) {
+//         //     combinedArray = MusicData;
+//         // } else {
+//         //     const tagMusicDataList = await musicTagFindBySearchStr(
+//         //         {},
+//         //         searchStr
+//         //     );
+
+//         //     combinedArray = JSON.stringify(
+//         //         arrayFilterSameData(MusicData, tagMusicDataList, "id"),
+//         //         null,
+//         //         2
+//         //     );
+
+//         //     combinedArray = JSON.parse(combinedArray);
+//         // }
+
+//         combinedArray = MusicData;
+
+//         const tagMusicDataList = await musicTagFindBySearchStr({}, searchStr);
+
+//         combinedArray = JSON.stringify(
+//             arrayFilterSameData(MusicData, tagMusicDataList, "id"),
+//             null,
+//             2
+//         );
+
+//         combinedArray = JSON.parse(combinedArray);
+
+//         if (combinedArray.length > 0) {
+//             try {
+//                 // Promise.all 사용
+//                 result = await Promise.all(
+//                     combinedArray.map(async (item) => {
+//                         try {
+//                             const foundLink = await Link.findAll({
+//                                 where: {
+//                                     MusicId: item.id,
+//                                 },
+//                                 attributes: {
+//                                     exclude: [
+//                                         "createdAt",
+//                                         "updatedAt",
+//                                         "deletedAt",
+//                                         "MusicId",
+//                                     ],
+//                                 },
+//                                 raw: true,
+//                             });
+
+//                             // link 데이터를 찾았을 때만 추가
+//                             if (foundLink.length > 0) {
+//                                 item.linkList = foundLink;
+//                             }
+
+//                             const tagList = await Music.findAll({
+//                                 where: {
+//                                     id: item.id,
+//                                 },
+//                                 include: [
+//                                     {
+//                                         model: Tag,
+//                                         through: MusicTag, // through 속성을 통해 MusicTag 테이블을 지정
+//                                         attributes: ["id", "name"], // 가져올 태그의 속성을 지정
+//                                     },
+//                                 ],
+//                                 raw: true,
+//                             });
+
+//                             const tagNamesArray = tagList.map((music) =>
+//                                 music["Tags.name"] !== null
+//                                     ? music["Tags.name"]
+//                                     : ""
+//                             );
+
+//                             if (tagNamesArray.length > 0) {
+//                                 item.Tags = tagNamesArray;
+//                             }
+
+//                             return item; // Promise.all에서 반환할 값으로 각 item을 반환
+//                         } catch (error) {
+//                             console.error("Error finding link:", error);
+//                             throw error; // 에러 발생시에는 Promise.all이 중단되도록 에러를 다시 throw
+//                         }
+//                     })
+//                 );
+//             } catch (error) {
+//                 console.error("Error in Promise.all:", error);
+//             }
+//         }
+
+//         res.status(200).json({
+//             data: result !== undefined ? result : [],
+//             msg: "SUCCESS",
+//         });
+//         console.log(
+//             "/music/searchMusicList=================================[END]"
+//         );
+//     } catch (error) {
+//         console.log(error);
+//         next(error);
+//     }
+// });
+
 //음악 검색 리스트
 //music/searchMusicList
-router.get("/searchMusicList2", async (req, res, next) => {
+router.get("/searchMusicList3", async (req, res, next) => {
     try {
         console.log(
-            "/music/searchMusicList=================================[START]"
+            "/music/searchMusicList3=================================[START]"
         );
 
         const searchStr = req.query.searchStr;
 
-        let where = 0;
+        console.log("searchStr===", searchStr);
+
+        let where = {};
         if (parseInt(req.query.lastId, 10) > 0) {
-            // 초기 로딩이 아닐 때
-            where = {
-                [Op.and]: [
-                    {
-                        [Op.or]: [
-                            {
-                                title: {
-                                    [Op.like]: `%${searchStr}%`,
-                                },
-                            },
-                            {
-                                keumyong: {
-                                    [Op.like]: `%${searchStr}%`,
-                                },
-                            },
-                            {
-                                taejin: {
-                                    [Op.like]: `%${searchStr}%`,
-                                },
-                            },
-                            {
-                                "$Singer.name$": {
-                                    [Op.like]: `%${searchStr}%`,
-                                },
-                            },
-                            {
-                                "$Singer.e_name$": {
-                                    [Op.like]: `%${searchStr}%`,
-                                },
-                            },
-                            {
-                                "$Singer.j_name$": {
-                                    [Op.like]: `%${searchStr}%`,
-                                },
-                            },
-                            {
-                                "$Category.name$": {
-                                    [Op.like]: `%${searchStr}%`,
-                                },
-                            },
-                        ],
-                    },
-                    {
-                        id: {
-                            [Op.lt]: parseInt(req.query.lastId, 10),
-                        },
-                    },
-                ],
-            };
-        } else {
-            where = {
-                [Op.and]: [
-                    {
-                        [Op.or]: [
-                            {
-                                title: {
-                                    [Op.like]: `%${searchStr}%`,
-                                },
-                            },
-                            {
-                                keumyong: {
-                                    [Op.like]: `%${searchStr}%`,
-                                },
-                            },
-                            {
-                                taejin: {
-                                    [Op.like]: `%${searchStr}%`,
-                                },
-                            },
-                            {
-                                "$Singer.name$": {
-                                    [Op.like]: `%${searchStr}%`,
-                                },
-                            },
-                            {
-                                "$Singer.e_name$": {
-                                    [Op.like]: `%${searchStr}%`,
-                                },
-                            },
-                            {
-                                "$Singer.j_name$": {
-                                    [Op.like]: `%${searchStr}%`,
-                                },
-                            },
-                            {
-                                "$Category.name$": {
-                                    [Op.like]: `%${searchStr}%`,
-                                },
-                            },
-                        ],
-                    },
-                ],
-            };
+            where.id = { [Op.lt]: parseInt(req.query.lastId, 10) };
         }
 
         const MusicData = await Music.findAll({
             where,
-            limit: 5,
-            order: [["createdAt", "DESC"]],
             attributes: {
-                exclude: ["updatedAt", "deletedAt"],
+                exclude: ["createdAt", "deletedAt", "m_delYN"],
             },
             include: [
                 {
-                    model: Singer,
-                    where: {
-                        [Op.or]: [
-                            {
-                                name: {
-                                    [Op.like]: `%${searchStr}%`,
-                                },
-                            },
-                            {
-                                e_name: {
-                                    [Op.like]: `%${searchStr}%`,
-                                },
-                            },
-                            {
-                                j_name: {
-                                    [Op.like]: `%${searchStr}%`,
-                                },
-                            },
-                        ],
+                    model: Tag,
+                    through: "MusicTag",
+                    as: "Tags",
+                    attributes: ["name"],
+                    through: {
+                        attributes: {
+                            exclude: [
+                                "createdAt",
+                                "updatedAt",
+                                "MusicId",
+                                "TagId",
+                            ],
+                        },
                     },
+                },
+                {
+                    model: Singer,
                     attributes: {
-                        include: ["name", "e_name", "j_name"],
                         exclude: [
                             "createdAt",
                             "updatedAt",
@@ -848,17 +1030,10 @@ router.get("/searchMusicList2", async (req, res, next) => {
                             "s_delYN",
                         ],
                     },
-                    required: false, // 연결된 값이 없어도 가져오기
                 },
                 {
                     model: Category,
-                    where: {
-                        name: {
-                            [Op.like]: `%${searchStr}%`,
-                        },
-                    },
                     attributes: {
-                        include: ["name"],
                         exclude: [
                             "createdAt",
                             "updatedAt",
@@ -866,110 +1041,120 @@ router.get("/searchMusicList2", async (req, res, next) => {
                             "c_delYN",
                         ],
                     },
-                    required: false, // 연결된 값이 없어도 가져오기
+                },
+                {
+                    model: Link,
+                    attributes: {
+                        exclude: [
+                            "createdAt",
+                            "updatedAt",
+                            "deletedAt",
+                            "MusicId",
+                        ],
+                    },
                 },
             ],
+            // limit: 5,
+            order: [["createdAt", "DESC"]],
+        }).then((musicRecords) => {
+            // musicRecords에는 Music 테이블의 레코드가 포함되어 있음
+            const dataList = [];
 
-            // raw: true,
+            musicRecords.forEach((musicRecord) => {
+                //Music 정보 접근===========================================
+                const title = includesSearch(searchStr, musicRecord.title);
+                const keumyong = includesSearch(
+                    searchStr,
+                    musicRecord.keumyong
+                );
+                const taejin = includesSearch(searchStr, musicRecord.taejin);
+
+                if (
+                    title.partialMatch ||
+                    title.includesTxt ||
+                    keumyong.partialMatch ||
+                    keumyong.includesTxt ||
+                    taejin.partialMatch ||
+                    taejin.includesTxt
+                ) {
+                    if (dataList.length > 5) return false;
+                    dataList.push(musicRecord);
+                }
+
+                // 연결된 Category 정보에 접근=============================
+
+                if (musicRecord.Category) {
+                    const categoryName = includesSearch(
+                        searchStr,
+                        musicRecord.Category.name
+                    );
+                    if (categoryName.partialMatch || categoryName.includesTxt) {
+                        if (dataList.length > 5) return false;
+                        dataList.push(musicRecord);
+                    }
+                } else {
+                    console.log("해당 곡은 연결된 카테고리가 없음");
+                }
+
+                // 연결된 Tag 정보에 접근==================================
+                if (musicRecord.Tags && musicRecord.Tags.length > 0) {
+                    musicRecord.Tags.map((tag) => {
+                        const tagResult = includesSearch(searchStr, tag.name);
+                        if (tagResult.partialMatch || tagResult.includesTxt) {
+                            if (dataList.length > 5) return false;
+                            dataList.push(musicRecord);
+                        }
+                    });
+                } else {
+                    console.log("해당 곡은 연결된 태그가 없음");
+                }
+
+                // 연결된 Singer 정보에 접근================================
+                if (musicRecord.Singer) {
+                    const singerName = includesSearch(
+                        searchStr,
+                        musicRecord.Singer.name
+                    );
+                    const singerEName = includesSearch(
+                        searchStr,
+                        musicRecord.Singer.e_name
+                    );
+                    const singerJName = includesSearch(
+                        searchStr,
+                        musicRecord.Singer.j_name
+                    );
+                    if (
+                        singerName.partialMatch ||
+                        singerName.includesTxt ||
+                        singerEName.partialMatch ||
+                        singerEName.includesTxt ||
+                        singerJName.partialMatch ||
+                        singerJName.includesTxt
+                    ) {
+                        if (dataList.length > 5) return false;
+                        dataList.push(musicRecord);
+                    }
+                } else {
+                    console.log("해당 곡은 연결된 가수정보가 없음");
+                }
+            });
+
+            // 중복 데이터 삭제=================================================
+            const uniqueIdsSet = new Set();
+            let musicUniqDataList = [];
+
+            dataList.forEach((item) => {
+                if (!uniqueIdsSet.has(item.id)) {
+                    uniqueIdsSet.add(item.id);
+                    musicUniqDataList.push(item);
+                }
+            });
+
+            return musicUniqDataList;
         });
 
-        console.log("lastId==============", req.query.lastId);
-        let result;
-        let combinedArray;
-
-        // if (MusicData.length > 0) {
-        //     combinedArray = MusicData;
-        // } else {
-        //     const tagMusicDataList = await musicTagFindBySearchStr(
-        //         {},
-        //         searchStr
-        //     );
-
-        //     combinedArray = JSON.stringify(
-        //         arrayFilterSameData(MusicData, tagMusicDataList, "id"),
-        //         null,
-        //         2
-        //     );
-
-        //     combinedArray = JSON.parse(combinedArray);
-        // }
-
-        combinedArray = MusicData;
-
-        const tagMusicDataList = await musicTagFindBySearchStr({}, searchStr);
-
-        combinedArray = JSON.stringify(
-            arrayFilterSameData(MusicData, tagMusicDataList, "id"),
-            null,
-            2
-        );
-
-        combinedArray = JSON.parse(combinedArray);
-
-        if (combinedArray.length > 0) {
-            try {
-                // Promise.all 사용
-                result = await Promise.all(
-                    combinedArray.map(async (item) => {
-                        try {
-                            const foundLink = await Link.findAll({
-                                where: {
-                                    MusicId: item.id,
-                                },
-                                attributes: {
-                                    exclude: [
-                                        "createdAt",
-                                        "updatedAt",
-                                        "deletedAt",
-                                        "MusicId",
-                                    ],
-                                },
-                                raw: true,
-                            });
-
-                            // link 데이터를 찾았을 때만 추가
-                            if (foundLink.length > 0) {
-                                item.linkList = foundLink;
-                            }
-
-                            const tagList = await Music.findAll({
-                                where: {
-                                    id: item.id,
-                                },
-                                include: [
-                                    {
-                                        model: Tag,
-                                        through: MusicTag, // through 속성을 통해 MusicTag 테이블을 지정
-                                        attributes: ["id", "name"], // 가져올 태그의 속성을 지정
-                                    },
-                                ],
-                                raw: true,
-                            });
-
-                            const tagNamesArray = tagList.map((music) =>
-                                music["Tags.name"] !== null
-                                    ? music["Tags.name"]
-                                    : ""
-                            );
-
-                            if (tagNamesArray.length > 0) {
-                                item.Tags = tagNamesArray;
-                            }
-
-                            return item; // Promise.all에서 반환할 값으로 각 item을 반환
-                        } catch (error) {
-                            console.error("Error finding link:", error);
-                            throw error; // 에러 발생시에는 Promise.all이 중단되도록 에러를 다시 throw
-                        }
-                    })
-                );
-            } catch (error) {
-                console.error("Error in Promise.all:", error);
-            }
-        }
-
         res.status(200).json({
-            data: result !== undefined ? result : [],
+            data: MusicData.length > 0 ? MusicData : [],
             msg: "SUCCESS",
         });
         console.log(

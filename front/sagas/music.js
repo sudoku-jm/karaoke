@@ -161,7 +161,7 @@ function searchMusicListAPI(data) {
 	// 	}`,
 	// );
 	return axios.get(
-		`/music/searchMusicList2?searchStr=${data.schTxt || ""}&lastId=${
+		`/music/searchMusicList3?searchStr=${data.schTxt || ""}&lastId=${
 			data.lastId
 		}`,
 	);

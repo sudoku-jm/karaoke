@@ -1,6 +1,7 @@
 import React from "react";
 import { youtubeParser } from "../../func/board";
 import { Validation } from "../../func/common";
+import Link from "next/link";
 
 const BoardListRequest = ({
 	board,
@@ -91,14 +92,21 @@ const BoardListRequest = ({
 					? "-"
 					: b_link.split(",").map((item, idx) => (
 							<>
-								<span
+								{/* <span
 									key={idx}
 									className="link-lists"
 									dangerouslySetInnerHTML={{
 										__html: youtubeParser(item, 150, 100),
 									}}
-								></span>
-								<em className="link">{b_link}</em>
+								></span> */}
+								<Link
+									href={item}
+									target="_blank"
+									className="link"
+									title="새창열림"
+								>
+									유튜브 링크 {idx + 1}
+								</Link>
 							</>
 					  ))}
 			</td>
