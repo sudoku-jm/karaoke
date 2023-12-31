@@ -28,9 +28,17 @@ const BoardListRequest = ({
 		MusicId,
 	} = board;
 
+	console.log("board", board);
+
 	return (
 		<tr key={id} className={`${board.new == "Y" ? "" : "modify"}`}>
-			<td>{board.new == "Y" ? "등록요청" : "수정요청"}</td>
+			<td>
+				{board.new == "Y"
+					? MusicId == null
+						? "등록요청"
+						: "등록완료"
+					: "수정요청"}
+			</td>
 			<td>
 				{CategoryId !== null ? (
 					<>{Category?.name}</>
@@ -112,8 +120,18 @@ const BoardListRequest = ({
 			</td>
 			<td>{b_contents}</td>
 			<td>
-				{MusicId == null && CategoryId !== null && SingerId !== null && (
-					<button onClick={() => handleInsertMusic(board)}>음악추가</button>
+				{board.new == "Y" ? (
+					<>
+						{MusicId == null && CategoryId !== null && SingerId !== null && (
+							<button onClick={() => handleInsertMusic(board)}>음악추가</button>
+						)}
+					</>
+				) : (
+					<>
+						{CategoryId !== null && SingerId !== null && (
+							<button onClick={() => handleInsertMusic(board)}>음악추가</button>
+						)}
+					</>
 				)}
 			</td>
 		</tr>

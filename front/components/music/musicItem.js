@@ -21,6 +21,9 @@ const MusicItem = ({ music, schTxt }) => {
 	const handleMusicInfo = () => {
 		router.push(`/music/${id}`);
 	};
+	const handleMusicModify = (id) => {
+		router.push(`/music/modify?id=${id}`);
+	};
 	return (
 		<div style={{ height: 500 }}>
 			아이디 : {id}
@@ -64,6 +67,7 @@ const MusicItem = ({ music, schTxt }) => {
 				))}
 			<br />
 			<button onClick={() => handleMusicInfo()}>상세보기</button>
+			<button onClick={() => handleMusicModify(id)}>수정요청</button>
 		</div>
 	);
 };

@@ -258,6 +258,36 @@ router.post("/insertBoard", async (req, res, next) => {
 
         let form = {};
         let musicData = {};
+        const orConditions = [];
+
+        if (req.body.musicId !== "") {
+            orConditions.push({
+                id: req.body.musicId,
+            });
+        }
+
+        if (req.body.keumyong !== "") {
+            orConditions.push({
+                keumyong: req.body.keumyong,
+            });
+        }
+        if (req.body.taejin !== "") {
+            orConditions.push({
+                taejin: req.body.taejin,
+            });
+        }
+
+        if (orConditions.length > 0) {
+            musicData = await Music.findOne({
+                where: {
+                    [Op.or]: orConditions,
+                },
+                attributes: {
+                    exclude: ["createdAt", "deletedAt"],
+                },
+                raw: true,
+            });
+        }
 
         /** 새글 작성 */
         if (req.body.new == "Y") {
@@ -321,16 +351,6 @@ router.post("/insertBoard", async (req, res, next) => {
                 });
             }
 
-            musicData = await Music.findOne({
-                where: {
-                    id: req.body.musicId,
-                },
-                attributes: {
-                    exclude: ["createdAt", "deletedAt"],
-                },
-                raw: true,
-            });
-
             form = {
                 b_category: req.body.categoryName,
                 b_title: req.body.title,
@@ -349,15 +369,19 @@ router.post("/insertBoard", async (req, res, next) => {
             };
 
             //카테고리
-            if (cateId !== "" && req.body.categoryName !== "") {
-                form.b_category = req.body.categoryName;
-            } else if (
-                Object.keys(category).length !== 0 &&
-                category !== null
-            ) {
+            if (Object.keys(category).length !== 0 && category !== null) {
                 //카테고리 값이 있을 때
                 form.b_category = category.name;
             }
+            // if (cateId !== "" && req.body.categoryName !== "") {
+            //     form.b_category = req.body.categoryName;
+            // } else if (
+            //     Object.keys(category).length !== 0 &&
+            //     category !== null
+            // ) {
+            //     //카테고리 값이 있을 때
+            //     form.b_category = category.name;
+            // }
 
             //가수
             if (singerId !== "" && req.body.singerName !== "") {
@@ -988,6 +1012,7 @@ router.post("/hitMusic", async (req, res, next) => {
 //음악 정보
 router.get("/musicInfo", async (req, res, next) => {
     try {
+        console.log("/music/musicInfo=================================[START]");
         if (req.query.id == undefined && req.query.id == "") {
             return res.status(202).json({
                 msg: "음악 정보가 없습니다.",
@@ -1019,6 +1044,45 @@ router.get("/musicInfo", async (req, res, next) => {
                 {
                     model: Link,
                     attributes: ["src"],
+                },
+            ],
+            attributes: {
+                exclude: ["createdAt", "deletedAt"],
+            },
+        });
+
+        res.status(200).json({
+            data: { resultData },
+            msg: "SUCCESS",
+        });
+
+        console.log("/music/musicInfo=================================[END]");
+
+        //hit DB 추가
+    } catch (error) {}
+});
+
+//음악 연관 정보
+router.get("/musicChanInfo", async (req, res, next) => {
+    try {
+        console.log(
+            "/music/musicChanInfo=================================[START]"
+        );
+        if (req.query.id == undefined && req.query.id == "") {
+            return res.status(202).json({
+                msg: "음악 정보가 없습니다.",
+            });
+        }
+
+        //음악 정보 1개
+        const resultData = await Music.findOne({
+            where: {
+                id: req.query.id,
+            },
+            include: [
+                {
+                    model: Tag,
+                    attributes: ["name"],
                 },
             ],
             attributes: {
@@ -1101,10 +1165,13 @@ router.get("/musicInfo", async (req, res, next) => {
         });
 
         res.status(200).json({
-            data: { resultData, musicUniqDataList, musicSingerList },
+            data: { musicUniqDataList, musicSingerList },
             msg: "SUCCESS",
         });
 
+        console.log(
+            "/music/musicChanInfo=================================[END]"
+        );
         //hit DB 추가
     } catch (error) {}
 });

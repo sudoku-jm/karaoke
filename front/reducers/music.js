@@ -31,6 +31,10 @@ export const initalState = {
 	musicInfoDone: false,
 	musicInfoError: false,
 	musicInfo: false,
+	musicChanInfoLoading: false,
+	musicChanInfoDone: false,
+	musicChanInfoError: false,
+	musicChanInfo: false,
 };
 
 //곡 쓰기 요청 클릭
@@ -86,6 +90,10 @@ export const SEARCH_MUSIC_LIST_FAILURE = "SEARCH_MUSIC_LIST_FAILURE";
 export const MUSIC_INFO_REQUEST = "MUSIC_INFO_REQUEST";
 export const MUSIC_INFO_SUCCESS = "MUSIC_INFO_SUCCESS";
 export const MUSIC_INFO_FAILURE = "MUSIC_INFO_FAILURE";
+//음악 연관 정보=================================================================
+export const MUSIC_CHAN_INFO_REQUEST = "MUSIC_CHAN_INFO_REQUEST";
+export const MUSIC_CHAN_INFO_SUCCESS = "MUSIC_CHAN_INFO_SUCCESS";
+export const MUSIC_CHAN_INFO_FAILURE = "MUSIC_CHAN_INFO_FAILURE";
 
 const reducer = (state = initalState, action) => {
 	return produce(state, (d) => {
@@ -211,6 +219,21 @@ const reducer = (state = initalState, action) => {
 				draft.musicInfoLoading = false;
 				draft.musicInfoError = action.error;
 				draft.musicInfo = null;
+				break;
+			//음악 상세 정보
+			case MUSIC_CHAN_INFO_REQUEST:
+				draft.musicChanInfoLoading = true;
+				draft.musicChanInfoDone = false;
+				break;
+			case MUSIC_CHAN_INFO_SUCCESS:
+				draft.musicChanInfoLoading = false;
+				draft.musicChanInfoDone = true;
+				draft.musicChanInfo = action.data;
+				break;
+			case MUSIC_CHAN_INFO_FAILURE:
+				draft.musicChanInfoLoading = false;
+				draft.musicChanInfoError = action.error;
+				draft.musicChanInfo = null;
 				break;
 			default:
 				break;

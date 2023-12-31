@@ -6,9 +6,8 @@ const board = {
 		let result = false;
 		switch (type) {
 			case "NEW":
-				result = board.ValidationInsertNewData(data);
-				break;
 			case "MODIFY":
+				result = board.ValidationInsertNewData(data);
 				break;
 			default:
 				break;

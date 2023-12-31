@@ -2,7 +2,10 @@ import { useRouter } from "next/router";
 import React, { useEffect, useState } from "react";
 import { Validation } from "../../func/common";
 import { useDispatch, useSelector } from "react-redux";
-import { MUSIC_INFO_REQUEST } from "../../reducers/music";
+import {
+	MUSIC_CHAN_INFO_REQUEST,
+	MUSIC_INFO_REQUEST,
+} from "../../reducers/music";
 import { youtubeParser } from "../../func/board";
 import Link from "next/link";
 
@@ -10,7 +13,8 @@ const MusicInfo = () => {
 	const router = useRouter();
 	const dispatch = useDispatch();
 	const id = router.query?.musicId;
-	const { musicInfoDone, musicInfo } = useSelector((state) => state.music);
+	const { musicInfoDone, musicInfo, musicChanInfoDone, musicChanInfo } =
+		useSelector((state) => state.music);
 	const [music, setMusic] = useState({});
 	const [musicList, setMusicList] = useState({
 		tagCateList: [],
@@ -23,17 +27,23 @@ const MusicInfo = () => {
 				type: MUSIC_INFO_REQUEST,
 				id,
 			});
+			dispatch({
+				type: MUSIC_CHAN_INFO_REQUEST,
+				id,
+			});
 		}
 	}, [id]);
 	useEffect(() => {
 		if (musicInfoDone) {
 			setMusic(musicInfo.resultData);
+		}
+		if (musicChanInfoDone) {
 			setMusicList((prev) => ({
-				tagCateList: musicInfo.musicUniqDataList,
-				singerList: musicInfo.musicSingerList,
+				tagCateList: musicChanInfo.musicUniqDataList,
+				singerList: musicChanInfo.musicSingerList,
 			}));
 		}
-	}, [musicInfoDone]);
+	}, [musicInfoDone, musicChanInfoDone]);
 	return (
 		<div>
 			{musicInfo !== null && (

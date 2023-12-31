@@ -267,6 +267,23 @@ router.post("/insertMusic", async (req, res, next) => {
                     //신규 추가 요청일 때
 
                     if (
+                        boardData.CategoryId == "" ||
+                        boardData.CategoryId == null
+                    ) {
+                        return res.status(202).json({
+                            msg: "파라미터 오류. (CategoryId 필수)",
+                        });
+                    }
+                    if (
+                        boardData.SingerId == "" ||
+                        boardData.SingerId == null
+                    ) {
+                        return res.status(202).json({
+                            msg: "파라미터 오류. (SingerId 필수)",
+                        });
+                    }
+
+                    if (
                         boardData.b_keumyong == "" &&
                         boardData.b_taejin == ""
                     ) {
@@ -378,6 +395,23 @@ router.post("/insertMusic", async (req, res, next) => {
                         });
                     }
 
+                    if (
+                        boardData.CategoryId == "" ||
+                        boardData.CategoryId == null
+                    ) {
+                        return res.status(202).json({
+                            msg: "파라미터 오류. (CategoryId 필수)",
+                        });
+                    }
+                    if (
+                        boardData.SingerId == "" ||
+                        boardData.SingerId == null
+                    ) {
+                        return res.status(202).json({
+                            msg: "파라미터 오류. (SingerId 필수)",
+                        });
+                    }
+
                     const musicData = await Music.findOne({
                         where: {
                             id: boardData.MusicId,
@@ -425,7 +459,7 @@ router.post("/insertMusic", async (req, res, next) => {
                     });
 
                     //tag 찾기==================================
-                    createUpdateMusicTag("UPDATE", boardData.b_tags);
+                    createUpdateMusicTag("UPDATE", boardData.b_tags, musicData);
 
                     res.status(200).json({
                         data: form,

@@ -182,7 +182,7 @@ const arrayFilterSameData = (AList, BList, filterColum) => {
 };
 
 //해시태그 저장, 음악 - 태그간 관계 데이터 추가
-const createUpdateMusicTag = async (type, tags, createMusic) => {
+const createUpdateMusicTag = async (type, tags, musicData) => {
     const hashtags = tags.match(/#[^\s#]+/g); //해시태그 찾는 정규표현식
 
     console.log("hashtags", hashtags);
@@ -205,7 +205,7 @@ const createUpdateMusicTag = async (type, tags, createMusic) => {
         // console.log("tagResult======", tagResult);
         switch (type) {
             case "CREATE":
-                await createMusic.addTag(tagResult.map((v) => v[0]));
+                await musicData.addTag(tagResult.map((v) => v[0]));
                 break;
             case "UPDATE":
                 //수정한 음악의 id를 들고와서 다시 tag 관계성 저장.

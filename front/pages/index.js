@@ -4,13 +4,13 @@ import MainCon from "../components/main/mainCon";
 import { Container } from "../style/ContentStyle";
 
 const index = () => {
-    return (
-        <AppLayout>
-            <Container>
-                <MainCon />
-            </Container>
-        </AppLayout>
-    );
+	return (
+		<AppLayout>
+			<Container>
+				<MainCon />
+			</Container>
+		</AppLayout>
+	);
 };
 
 export default index;

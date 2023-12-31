@@ -22,6 +22,9 @@ import {
 	MUSIC_INFO_REQUEST,
 	MUSIC_INFO_SUCCESS,
 	MUSIC_INFO_FAILURE,
+	MUSIC_CHAN_INFO_REQUEST,
+	MUSIC_CHAN_INFO_SUCCESS,
+	MUSIC_CHAN_INFO_FAILURE,
 } from "../reducers/music";
 import { queryStringFunc } from "../func/common";
 
@@ -211,6 +214,31 @@ function* musicInfo(action) {
 	}
 }
 
+//음악 연관 상세 정보
+function musicChanInfoAPI(id) {
+	return axios.get(`/music/musicChanInfo?id=${id || ""}`);
+}
+
+function* musicChanInfo(action) {
+	try {
+		const result = yield call(musicChanInfoAPI, action.id);
+		console.log("musicChanInfoAPI result", result);
+		if (result.status == 200) {
+			yield put({
+				type: MUSIC_CHAN_INFO_SUCCESS,
+				data: result.data.data,
+			});
+		} else {
+			yield put({
+				type: MUSIC_CHAN_INFO_FAILURE,
+				error: result.response,
+			});
+		}
+	} catch (err) {
+		console.error(err);
+	}
+}
+
 //watch
 function* watchInsertMusic() {
 	yield takeLatest(INSERT_BOARD_REQUEST, insertBoard);
@@ -233,6 +261,9 @@ function* watchSearchMusicList() {
 function* watchMusicInfo() {
 	yield takeLatest(MUSIC_INFO_REQUEST, musicInfo);
 }
+function* watchMusicChanInfo() {
+	yield takeLatest(MUSIC_CHAN_INFO_REQUEST, musicChanInfo);
+}
 
 export default function* musicSaga() {
 	yield all([fork(watchInsertMusic)]);
@@ -242,4 +273,5 @@ export default function* musicSaga() {
 	yield all([fork(watchBoardList)]);
 	yield all([fork(watchSearchMusicList)]);
 	yield all([fork(watchMusicInfo)]);
+	yield all([fork(watchMusicChanInfo)]);
 }
