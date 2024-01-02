@@ -1195,7 +1195,7 @@ router.get("/popularKeyword", async (req, res, next) => {
         const threeHoursAgo = moment().subtract(3, "hours");
 
         let allPopularWords = [];
-        let whereCondition = {
+        const whereConditionWithTimeRange = {
             "$Tags.id$": {
                 [Op.ne]: null,
             },
@@ -1207,15 +1207,20 @@ router.get("/popularKeyword", async (req, res, next) => {
             },
         };
 
-        allPopularWords = await popualRankKeywordList(whereCondition);
+        const whereConditionWithoutTimeRange = {
+            "$Tags.id$": {
+                [Op.ne]: null,
+            },
+        };
+
+        allPopularWords = await popualRankKeywordList(
+            whereConditionWithTimeRange
+        );
 
         if (!allPopularWords.length > 0) {
-            whereCondition = {
-                "$Tags.id$": {
-                    [Op.ne]: null,
-                },
-            };
-            allPopularWords = await popualRankKeywordList(whereCondition);
+            allPopularWords = await popualRankKeywordList(
+                whereConditionWithoutTimeRange
+            );
         }
 
         const filteredPopularWords = allPopularWords.filter(
