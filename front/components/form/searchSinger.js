@@ -1,8 +1,9 @@
 import React, { useCallback, useEffect, useState } from "react";
 import { useDispatch, useSelector } from "react-redux";
 import { SEARCH_SINGER_REQUEST } from "../../reducers/music";
+import { Validation } from "../../func/common";
 
-const SearchSinger = ({ onChangeForm }) => {
+const SearchSinger = ({ insertForm, onChangeForm }) => {
 	const dispatch = useDispatch();
 	const { searchSingerLoading, searchSingerDone, searchSingerList } =
 		useSelector((state) => state.music);
@@ -16,6 +17,21 @@ const SearchSinger = ({ onChangeForm }) => {
 	const [visible, setVisible] = useState({
 		searchSingerListVisible: false,
 	});
+
+	//[수정] 가수 데이터 넣기
+	useEffect(() => {
+		if (!Validation.isEmpty(insertForm.singerName)) {
+			setForm((prev) => ({
+				...prev,
+				singerId: insertForm.SingerId,
+				selectedSinger: {
+					name: insertForm.singerName,
+					e_name: insertForm.singerEName,
+					j_name: insertForm.singerJName,
+				},
+			}));
+		}
+	}, [insertForm]);
 
 	const getSinger = useCallback(
 		(name) => {
@@ -40,7 +56,6 @@ const SearchSinger = ({ onChangeForm }) => {
 	//검색 결과
 	useEffect(() => {
 		if (searchSingerDone) {
-			console.log("/?searchSingerList", searchSingerList);
 			setForm((prev) => ({
 				...prev,
 				singerList: searchSingerList !== null ? searchSingerList : [],
@@ -107,7 +122,7 @@ const SearchSinger = ({ onChangeForm }) => {
 		});
 		onChangeForm((prev) => ({
 			...prev,
-			singerId: item.id,
+			singerId: item.id !== 0 ? item.id : "",
 			singerName: item.name,
 			singerEName: item.e_name,
 			singerJName: item.j_name,
@@ -154,7 +169,7 @@ const SearchSinger = ({ onChangeForm }) => {
 
 			{visible.searchSingerListVisible && (
 				<>
-					{form.singerList.length > 0 ? (
+					{form.singerList.length > 0 && (
 						<ul>
 							{form.singerList.map((list) => (
 								<li key={list.id}>
@@ -165,46 +180,46 @@ const SearchSinger = ({ onChangeForm }) => {
 								</li>
 							))}
 						</ul>
-					) : (
-						<div>
-							직접 작성 :<br />
-							<input
-								type="text"
-								name="singerName"
-								value={form.singerName}
-								onChange={handleInput}
-								placeholder="가수 한국어명"
-							/>
-							<br />
-							<input
-								type="text"
-								name="singerEName"
-								value={form.singerEName}
-								onChange={handleInput}
-								placeholder="가수 영문명"
-							/>
-							<br />
-							<input
-								type="text"
-								name="singerJName"
-								value={form.singerJName}
-								onChange={handleInput}
-								placeholder="가수 일본어명"
-							/>
-							<button
-								onClick={() =>
-									handleSelectSinger({
-										id: 0,
-										name: form.singerName,
-										e_name: form.singerEName,
-										j_name: form.singerJName,
-									})
-								}
-							>
-								직접 작성 완료
-							</button>
-						</div>
 					)}
+					<p>리스트에 없어요 직접 작성할래요</p>
+					<div>
+						직접 작성 :<br />
+						<input
+							type="text"
+							name="singerName"
+							value={form.singerName}
+							onChange={handleInput}
+							placeholder="가수 한국어명"
+						/>
+						<br />
+						<input
+							type="text"
+							name="singerEName"
+							value={form.singerEName}
+							onChange={handleInput}
+							placeholder="가수 영문명"
+						/>
+						<br />
+						<input
+							type="text"
+							name="singerJName"
+							value={form.singerJName}
+							onChange={handleInput}
+							placeholder="가수 일본어명"
+						/>
+						<button
+							onClick={() =>
+								handleSelectSinger({
+									id: 0,
+									name: form.singerName,
+									e_name: form.singerEName,
+									j_name: form.singerJName,
+								})
+							}
+						>
+							직접 작성 완료
+						</button>
+					</div>
 				</>
 			)}
 		</div>

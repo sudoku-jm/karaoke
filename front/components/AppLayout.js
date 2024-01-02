@@ -1,17 +1,19 @@
 import React from "react";
 import PropTypes from "prop-types";
-// import { GlobalStyle } from "../style/GlobalStyle";
+import { GlobalStyle } from "../style/resetStyle";
 
 const AppLayout = ({ children }) => {
-	return (
-		<div>
-			{/* <GlobalStyle /> */}
-			{children}
-		</div>
-	);
+    return (
+        <>
+            <GlobalStyle />
+
+            {children}
+
+        </>
+    );
 };
 
 AppLayout.propTypes = {
-	children: PropTypes.node.isRequired,
+    children: PropTypes.node.isRequired,
 };
 export default AppLayout;

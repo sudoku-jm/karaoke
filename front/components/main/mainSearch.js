@@ -1,19 +1,31 @@
-import React, { useCallback, useState } from "react";
+import React, { useCallback, useEffect, useState } from "react";
 import useInput from "../../hooks/useInput";
+import { Validation } from "../../func/common";
+import { useRouter } from "next/router";
 
-const MainSearch = () => {
+const MainSearch = ({ queryString }) => {
+	const router = useRouter();
 	const [schTxt, handleChange, setSchTxt] = useInput("");
 
-	//검색 클릭
-	const handleSubmit = (e) => {
-		if (
-			(e.type == "keyup" && e.code == "Enter") ||
-			(e.type == "click" && e.target.name == "schButton")
-		) {
-			//검색 API 호출
-			console.log("검색!");
+	useEffect(() => {
+		if (!Validation.isEmpty(queryString)) {
+			setSchTxt(queryString);
 		}
-	};
+	}, [queryString]);
+
+	const handleSubmit = useCallback(
+		(e) => {
+			if (
+				(e.type == "keyup" && e.code == "Enter") ||
+				(e.type == "click" && e.target.name == "schButton")
+			) {
+				if (!Validation.isEmpty(schTxt)) {
+					router.push(`/search/${schTxt}`);
+				}
+			}
+		},
+		[schTxt],
+	);
 
 	return (
 		<div>

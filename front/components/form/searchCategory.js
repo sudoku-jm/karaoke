@@ -4,8 +4,9 @@ import {
 	SEARCH_CATEGORY_REQUEST,
 	handleGetCategoryList,
 } from "../../reducers/music";
+import { Validation } from "../../func/common";
 
-const SearchCategory = ({ onChangeForm }) => {
+const SearchCategory = ({ insertForm, onChangeForm }) => {
 	const dispatch = useDispatch();
 	const {
 		searchCategoryList,
@@ -26,6 +27,18 @@ const SearchCategory = ({ onChangeForm }) => {
 	});
 	const [mount, setMount] = useState(false);
 
+	//[수정] 카테고리 데이터 넣기
+	useEffect(() => {
+		if (!Validation.isEmpty(insertForm.categoryName)) {
+			setCategory((prev) => ({
+				...prev,
+				categoryId: insertForm.categoryId,
+				selectedCategory: insertForm.categoryName,
+			}));
+		}
+	}, [insertForm]);
+
+	//카테고리 검색
 	const getCategory = useCallback(
 		(name) => {
 			if (name == "") {
@@ -196,7 +209,7 @@ const SearchCategory = ({ onChangeForm }) => {
 					type="text"
 					name="categoryName"
 					value={category.categoryName}
-					placeholder="카테고리 검색"
+					placeholder="카테고리 검색.예) Jpop, 나루토, 블리치"
 					onChange={handleInput}
 					onKeyUp={handleEnter}
 				/>
@@ -205,7 +218,7 @@ const SearchCategory = ({ onChangeForm }) => {
 			<div>
 				{visible.searchCateListVisible && (
 					<>
-						{category.searchCategoryList.length > 0 ? (
+						{category.searchCategoryList.length > 0 && (
 							<ul>
 								{category.searchCategoryList.map((list) => (
 									<li key={list.id}>
@@ -216,24 +229,24 @@ const SearchCategory = ({ onChangeForm }) => {
 									</li>
 								))}
 							</ul>
-						) : (
-							<div>
-								직접 작성 :{" "}
-								<span>
-									{category.categoryName}
-									<button
-										onClick={() =>
-											handleSelectCategory({
-												id: 0,
-												name: category.categoryName,
-											})
-										}
-									>
-										선택
-									</button>
-								</span>
-							</div>
 						)}
+						<p>리스트에 없어요 직접 작성할래요</p>
+						<div>
+							직접 작성 :{" "}
+							<span>
+								{category.categoryName}
+								<button
+									onClick={() =>
+										handleSelectCategory({
+											id: 0,
+											name: category.categoryName,
+										})
+									}
+								>
+									선택
+								</button>
+							</span>
+						</div>
 					</>
 				)}
 			</div>

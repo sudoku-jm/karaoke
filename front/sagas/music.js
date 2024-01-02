@@ -13,7 +13,20 @@ import {
 	SEARCH_SINGER_REQUEST,
 	SEARCH_SINGER_SUCCESS,
 	SEARCH_SINGER_FAILURE,
+	GET_BOARD_LIST_SUCCESS,
+	GET_BOARD_LIST_FAILURE,
+	GET_BOARD_LIST_REQUEST,
+	SEARCH_MUSIC_LIST_REQUREST,
+	SEARCH_MUSIC_LIST_SUCCESS,
+	SEARCH_MUSIC_LIST_FAILURE,
+	MUSIC_INFO_REQUEST,
+	MUSIC_INFO_SUCCESS,
+	MUSIC_INFO_FAILURE,
+	MUSIC_CHAN_INFO_REQUEST,
+	MUSIC_CHAN_INFO_SUCCESS,
+	MUSIC_CHAN_INFO_FAILURE,
 } from "../reducers/music";
+import { queryStringFunc } from "../func/common";
 
 // 추가/수정 요청글 작성
 function insertBoardAPI(data) {
@@ -27,7 +40,7 @@ function* insertBoard(action) {
 		if (result.status == 200) {
 			yield put({
 				type: INSERT_BOARD_SUCCESS,
-				data: result.data,
+				data: result.data.data,
 			});
 		} else {
 			yield put({
@@ -118,6 +131,114 @@ function* searchSinger(action) {
 	}
 }
 
+//요청리스트 가져오기
+function boardListAPI(lastId) {
+	return axios.get(`/music/getBoardList?lastId=${lastId || 0}`);
+}
+
+function* boardList(action) {
+	try {
+		const result = yield call(boardListAPI, action.lastId);
+		console.log("boardListAPI result", result);
+		if (result.status == 200) {
+			yield put({
+				type: GET_BOARD_LIST_SUCCESS,
+				data: result.data.data,
+			});
+		} else {
+			yield put({
+				type: GET_BOARD_LIST_FAILURE,
+				error: result.response,
+			});
+		}
+	} catch (err) {
+		console.error(err);
+	}
+}
+
+//음악 검색 리스트
+function searchMusicListAPI(data) {
+	// return axios.get(
+	// 	`/music/searchMusicList?searchStr=${data.schTxt || ""}&lastId=${
+	// 		data.lastId || 0
+	// 	}`,
+	// );
+	return axios.get(
+		`/music/searchMusicList3?searchStr=${data.schTxt || ""}&lastId=${
+			data.lastId
+		}`,
+	);
+}
+
+function* searchMusicList(action) {
+	try {
+		const result = yield call(searchMusicListAPI, action.data);
+		console.log("searchMusicListAPI result", result);
+		if (result.status == 200) {
+			yield put({
+				type: SEARCH_MUSIC_LIST_SUCCESS,
+				data: result.data.data,
+			});
+		} else {
+			yield put({
+				type: SEARCH_MUSIC_LIST_FAILURE,
+				error: result.response,
+			});
+		}
+	} catch (err) {
+		console.error(err);
+	}
+}
+//음악 상세 정보
+function musicInfoAPI(id) {
+	return axios.get(`/music/musicInfo?id=${id || ""}`);
+}
+
+function* musicInfo(action) {
+	try {
+		const result = yield call(musicInfoAPI, action.id);
+		console.log("musicInfoAPI result", result);
+		if (result.status == 200) {
+			yield put({
+				type: MUSIC_INFO_SUCCESS,
+				data: result.data.data,
+			});
+		} else {
+			yield put({
+				type: MUSIC_INFO_FAILURE,
+				error: result.response,
+			});
+		}
+	} catch (err) {
+		console.error(err);
+	}
+}
+
+//음악 연관 상세 정보
+function musicChanInfoAPI(id) {
+	return axios.get(`/music/musicChanInfo?id=${id || ""}`);
+}
+
+function* musicChanInfo(action) {
+	try {
+		const result = yield call(musicChanInfoAPI, action.id);
+		console.log("musicChanInfoAPI result", result);
+		if (result.status == 200) {
+			yield put({
+				type: MUSIC_CHAN_INFO_SUCCESS,
+				data: result.data.data,
+			});
+		} else {
+			yield put({
+				type: MUSIC_CHAN_INFO_FAILURE,
+				error: result.response,
+			});
+		}
+	} catch (err) {
+		console.error(err);
+	}
+}
+
 //watch
 function* watchInsertMusic() {
 	yield takeLatest(INSERT_BOARD_REQUEST, insertBoard);
@@ -131,10 +252,26 @@ function* watchgetCategory() {
 function* watchSearchSinger() {
 	yield takeLatest(SEARCH_SINGER_REQUEST, searchSinger);
 }
+function* watchBoardList() {
+	yield throttle(200, GET_BOARD_LIST_REQUEST, boardList);
+}
+function* watchSearchMusicList() {
+	yield takeLatest(SEARCH_MUSIC_LIST_REQUREST, searchMusicList);
+}
+function* watchMusicInfo() {
+	yield takeLatest(MUSIC_INFO_REQUEST, musicInfo);
+}
+function* watchMusicChanInfo() {
+	yield takeLatest(MUSIC_CHAN_INFO_REQUEST, musicChanInfo);
+}
 
 export default function* musicSaga() {
 	yield all([fork(watchInsertMusic)]);
 	yield all([fork(watchSearchCategory)]);
 	yield all([fork(watchgetCategory)]);
 	yield all([fork(watchSearchSinger)]);
+	yield all([fork(watchBoardList)]);
+	yield all([fork(watchSearchMusicList)]);
+	yield all([fork(watchMusicInfo)]);
+	yield all([fork(watchMusicChanInfo)]);
 }
