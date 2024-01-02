@@ -4,20 +4,23 @@
     "password": "1234",
     "database": "otakukaraoke",
     "host": "127.0.0.1",
-    "dialect": "mysql"
+    "dialect": "mysql",
+    "timezone": "Asia/Seoul"
   },
   "test": {
     "username": "root",
     "password":"1234",
     "database": "otakukaraoke",
     "host": "127.0.0.1",
-    "dialect": "mysql"
+    "dialect": "mysql",
+    "timezone": "Asia/Seoul"
   },
   "production": {
     "username": "root",
     "password":"1234",
     "database": "otakukaraoke",
     "host": "127.0.0.1",
-    "dialect": "mysql"
+    "dialect": "mysql",
+    "timezone": "Asia/Seoul"
   }
 }

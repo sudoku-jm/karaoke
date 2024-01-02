@@ -22,15 +22,15 @@ module.exports = (sequelize, DataTypes) => {
                 allowNull: false,
             },
             b_singer: {
-                type: DataTypes.STRING(20), //50글자이하 제한
+                type: DataTypes.STRING(50), //50글자이하 제한
                 allowNull: false,
             },
             b_e_singer: {
-                type: DataTypes.STRING(20), //50글자이하 제한
+                type: DataTypes.STRING(50), //50글자이하 제한
                 allowNull: true,
             },
             b_j_singer: {
-                type: DataTypes.STRING(20), //50글자이하 제한
+                type: DataTypes.STRING(50), //50글자이하 제한
                 allowNull: true,
             },
             b_keumyong: {

@@ -10,16 +10,16 @@ module.exports = (sequelize, DataTypes) => {
                 autoIncrement: true,
             },
             name: {
-                type: DataTypes.STRING(20), //20글자이하 제한
+                type: DataTypes.STRING(50), //20글자이하 제한
 
                 allowNull: false,
             },
             e_name: {
-                type: DataTypes.STRING(20), //20글자이하 제한
+                type: DataTypes.STRING(50), //20글자이하 제한
                 allowNull: true,
             },
             j_name: {
-                type: DataTypes.STRING(20), //20글자이하 제한
+                type: DataTypes.STRING(50), //20글자이하 제한
                 allowNull: true,
             },
             s_delYN: {

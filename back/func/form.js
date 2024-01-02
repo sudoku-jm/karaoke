@@ -7,8 +7,10 @@ const {
     MusicTag,
     Link,
     Board,
+    PopularWord,
 } = require("../models");
 const { Op } = require("sequelize");
+const moment = require("moment");
 
 const removeSpecialCharacters = (inputString) => {
     // 특수문자를 제거하는 정규 표현식
@@ -106,7 +108,6 @@ const musicFindAllByNumber = async (keumyong, taejin) => {
 const musicTagFindBySearchStr = async (where, searchStr, limitData) => {
     let limit = limitData !== undefined ? limitData : 0;
 
-    console.log("limitData", limitData);
     const MusicData = await Music.findAll({
         // where,
         limit,
@@ -290,6 +291,59 @@ const updateBoardMusicId = async (beforeData, newData) => {
     });
 };
 
+const saveSearchKeyword = async (searchStr) => {
+    const searchWordResult = await PopularWord.findOne({
+        where: {
+            word: searchStr,
+        },
+    });
+
+    let WordResult;
+    if (searchWordResult) {
+        searchWordResult.count += 1;
+        // searchWordResult.updatedAt = moment();
+        WordResult = await searchWordResult.save();
+    } else {
+        WordResult = await PopularWord.create({
+            word: searchStr,
+            count: 1,
+        });
+    }
+
+    const tagResult = await Tag.findOne({
+        where: {
+            name: searchStr,
+        },
+    });
+    if (tagResult !== null) {
+        WordResult.addTag(tagResult.id);
+    }
+};
+
+const popualRankKeywordList = async (whereCondition) => {
+    const allPopularWords = await PopularWord.findAll({
+        attributes: ["id", "word", "count", "updatedAt"],
+        order: [["count", "DESC"]],
+        include: [
+            {
+                model: Tag,
+                attributes: {
+                    include: ["id"],
+                    exclude: ["createdAt", "updatedAt", "deletedAt"],
+                },
+                where: {},
+                through: {
+                    // 그 외 중첩 연결테이블 제외.
+                    attributes: [],
+                },
+            },
+        ],
+        where: whereCondition,
+    });
+
+    return allPopularWords;
+};
+
 module.exports = {
     removeSpecialCharacters,
     includesSearch,
@@ -299,4 +353,6 @@ module.exports = {
     createUpdateMusicTag,
     createUpdateLink,
     updateBoardMusicId,
+    saveSearchKeyword,
+    popualRankKeywordList,
 };

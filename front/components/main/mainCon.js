@@ -6,6 +6,7 @@ import WriteForm from "../form/writeForm";
 import { useDispatch } from "react-redux";
 import { INSERT_BOARD_RESET } from "../../reducers/music";
 import Link from "next/link";
+import PopualRankKeywordList from "./popualRankKeywordList";
 
 const MainCon = () => {
     const dispatch = useDispatch();
@@ -26,6 +27,7 @@ const MainCon = () => {
     return (
         <>
             <MainSearch />
+            <PopualRankKeywordList />
             <RankList />
             <ButtonWrite handleWrite={handleWrite} />
             <Link href="/board">요청리스트</Link>

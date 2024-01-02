@@ -10,6 +10,7 @@ const {
     Hit,
     Link,
     MusicTag,
+    PopularWord,
 } = require("../models");
 const { Op } = require("sequelize");
 const {
@@ -17,8 +18,12 @@ const {
     includesSearch,
     musicTagFindBySearchStr,
     arrayFilterSameData,
+    saveSearchKeyword,
+    popualRankKeywordList,
 } = require("../func/form");
+const db = require("../models");
 const router = express.Router();
+const moment = require("moment");
 
 // router.get("/test", (req, res, next) => {
 //     try {
@@ -387,7 +392,7 @@ router.post("/insertBoard", async (req, res, next) => {
             if (singerId !== "" && req.body.singerName !== "") {
                 form.b_singer = req.body.singerName;
                 form.b_e_singer = req.body.singerEName;
-                form.b_j_singer = req.body.singerJNam;
+                form.b_j_singer = req.body.singerJName;
             } else if (Object.keys(singer).length !== 0 && singer !== null) {
                 //가수 값이 있을 때
                 form.b_singer = singer.name;
@@ -397,7 +402,6 @@ router.post("/insertBoard", async (req, res, next) => {
         }
 
         // 게시글 추가.
-        console.log("form333================", form);
         await Board.create({ ...form, raw: true });
 
         res.status(200).json({
@@ -425,16 +429,43 @@ router.get("/getBoardList", async (req, res, next) => {
         );
 
         let where = {};
-        if (req.query.new == "Y") {
-            //신곡 요청
-            where.new = req.query.new;
-        } else if (req.query.new == "N") {
-            //수정 요청
-            where.new = req.query.new;
-        } else {
-            //신곡, 수정 상관없이 내려감
-            where = {};
-        }
+        // console.log("req.query.insertEnd????", req.query.insertEnd);
+        // if (req.query.insertEnd !== "Y") {
+        //     where = {
+        //         [Op.and]: [
+        //             // {
+        //             //     new: req.query.new,
+        //             // },
+        //             {
+        //                 MusicId: {
+        //                     [Op.not]: null,
+        //                 },
+        //             },
+        //         ],
+        //     };
+        // }
+        // if (req.query.new == "Y") {
+        //     //신곡 요청
+
+        //     where = {
+        //         [Op.and]: [
+        //             {
+        //                 new: req.query.new,
+        //             },
+        //             {
+        //                 MusicId: {
+        //                     [Op.not]: null,
+        //                 },
+        //             },
+        //         ],
+        //     };
+        // } else if (req.query.new == "N") {
+        //     //수정 요청
+        //     where.new = req.query.new;
+        // } else {
+        //     //신곡, 수정 상관없이 내려감
+        //     where = {};
+        // }
 
         if (parseInt(req.query.lastId, 10)) {
             where.id = { [Op.lt]: parseInt(req.query.lastId, 10) };
@@ -482,58 +513,15 @@ router.get("/searchMusicList", async (req, res, next) => {
         );
 
         const searchStr = req.query.searchStr;
-        // if (searchStr == "") {
-        //     return res.status(202).json({
-        //         msg: "검색어는 필수입니다.",
-        //     });
-        // }
+        if (searchStr == "") {
+            return res.status(202).json({
+                msg: "검색어는 필수입니다.",
+            });
+        }
+
+        // PopularWord.addTag(searchWordResult.map((v) => v[0]));
+
         const MusicData = await Music.findAll({
-            // where: Sequelize.or(
-            //     {
-            //         [Op.or]: [
-            //             {
-            //                 title: {
-            //                     [Op.like]: `%${searchStr}%`,
-            //                 },
-            //             },
-            //             {
-            //                 keumyong: {
-            //                     [Op.like]: `%${searchStr}%`,
-            //                 },
-            //             },
-            //             {
-            //                 taejin: {
-            //                     [Op.like]: `%${searchStr}%`,
-            //                 },
-            //             },
-            //             {
-            //                 "$Singer.name$": {
-            //                     [Op.like]: `%${searchStr}%`,
-            //                 },
-            //             },
-            //             {
-            //                 "$Singer.e_name$": {
-            //                     [Op.like]: `%${searchStr}%`,
-            //                 },
-            //             },
-            //             {
-            //                 "$Singer.j_name$": {
-            //                     [Op.like]: `%${searchStr}%`,
-            //                 },
-            //             },
-            //             {
-            //                 "$Category.name$": {
-            //                     [Op.like]: `%${searchStr}%`,
-            //                 },
-            //             },
-            //         ],
-            //     },
-            //     {
-            //         id: {
-            //             [Op.lt]: parseInt(req.query.lastId, 10),
-            //         },
-            //     }
-            // ),
             where: {
                 [Op.or]: [
                     {
@@ -737,7 +725,15 @@ router.get("/searchMusicList3", async (req, res, next) => {
 
         const searchStr = req.query.searchStr;
 
-        console.log("searchStr===", searchStr);
+        if (searchStr == "") {
+            return res.status(202).json({
+                msg: "검색어는 필수입니다.",
+            });
+        }
+
+        //검색어 키워드 수집======================================================(s)
+        await saveSearchKeyword(searchStr);
+        //검색어 키워드 수집======================================================(e)
 
         let where = {};
         if (parseInt(req.query.lastId, 10) > 0) {
@@ -928,8 +924,6 @@ router.get("/searchHashTag", async (req, res, next) => {
 
         const MusicDataList = await musicTagFindBySearchStr(where, searchStr);
 
-        console.log("MusicDataList", MusicDataList);
-
         res.status(200).json({
             data: MusicDataList,
             msg: "SUCCESS",
@@ -1111,6 +1105,12 @@ router.get("/musicChanInfo", async (req, res, next) => {
                 attributes: {
                     exclude: ["createdAt", "deletedAt"],
                 },
+                include: [
+                    {
+                        model: Singer,
+                        attributes: ["name", "e_name", "j_name"],
+                    },
+                ],
             });
         }
 
@@ -1126,6 +1126,12 @@ router.get("/musicChanInfo", async (req, res, next) => {
                 attributes: {
                     exclude: ["createdAt", "deletedAt"],
                 },
+                // include: [
+                //     {
+                //         model: Singer,
+                //         attributes: ["name", "e_name", "j_name"],
+                //     },
+                // ],
             });
         }
 
@@ -1171,6 +1177,60 @@ router.get("/musicChanInfo", async (req, res, next) => {
 
         console.log(
             "/music/musicChanInfo=================================[END]"
+        );
+        //hit DB 추가
+    } catch (error) {}
+});
+
+//인기키워드
+router.get("/popularKeyword", async (req, res, next) => {
+    try {
+        console.log(
+            "/music/popularKeyword=================================[START]"
+        );
+
+        // 현재 시간
+        const now = moment();
+        // 3시간 전의 시간
+        const threeHoursAgo = moment().subtract(3, "hours");
+
+        let allPopularWords = [];
+        let whereCondition = {
+            "$Tags.id$": {
+                [Op.ne]: null,
+            },
+            updatedAt: {
+                [Op.between]: [
+                    threeHoursAgo.format("YYYY-MM-DD HH:mm:ss"),
+                    now.format("YYYY-MM-DD HH:mm:ss"),
+                ],
+            },
+        };
+
+        allPopularWords = await popualRankKeywordList(whereCondition);
+
+        if (!allPopularWords.length > 0) {
+            whereCondition = {
+                "$Tags.id$": {
+                    [Op.ne]: null,
+                },
+            };
+            allPopularWords = await popualRankKeywordList(whereCondition);
+        }
+
+        const filteredPopularWords = allPopularWords.filter(
+            (popularWord) => popularWord.Tags.length > 0
+        );
+
+        // 필터링된 결과 중에서 최대 5개만 선택
+        const limitedPopularList = filteredPopularWords.slice(0, 5);
+
+        res.status(200).json({
+            data: limitedPopularList,
+            msg: "SUCCESS",
+        });
+        console.log(
+            "/music/popularKeyword=================================[END]"
         );
         //hit DB 추가
     } catch (error) {}
