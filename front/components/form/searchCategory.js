@@ -5,6 +5,7 @@ import {
 	handleGetCategoryList,
 } from "../../reducers/music";
 import { Validation } from "../../func/common";
+import { SearchWriteStyle } from "../../style/ContentStyle";
 
 const SearchCategory = ({ insertForm, onChangeForm }) => {
 	const dispatch = useDispatch();
@@ -195,42 +196,43 @@ const SearchCategory = ({ insertForm, onChangeForm }) => {
 		});
 	};
 	return (
-		<>
-			<div>
-				{category.selectedCategory !== "" && (
+		<SearchWriteStyle $type="category">
+			<div className="selected-area">
+				{category.selectedCategory !== "" ? (
 					<>
 						{category.selectedCategory}
 						<button onClick={handleRemoveSelected}>삭제</button>
 					</>
+				) : (
+					<div className="form-input">
+						<input
+							type="text"
+							name="categoryName"
+							value={category.categoryName}
+							placeholder="카테고리 검색.예) Jpop, 나루토, 블리치"
+							onChange={handleInput}
+							onKeyUp={handleEnter}
+						/>
+					</div>
 				)}
 			</div>
-			{category.selectedCategory == "" && (
-				<input
-					type="text"
-					name="categoryName"
-					value={category.categoryName}
-					placeholder="카테고리 검색.예) Jpop, 나루토, 블리치"
-					onChange={handleInput}
-					onKeyUp={handleEnter}
-				/>
-			)}
 
-			<div>
-				{visible.searchCateListVisible && (
-					<>
-						{category.searchCategoryList.length > 0 && (
-							<ul>
-								{category.searchCategoryList.map((list) => (
-									<li key={list.id}>
-										{list.name}
-										<button onClick={() => handleSelectCategory(list)}>
-											선택
-										</button>
-									</li>
-								))}
-							</ul>
-						)}
-						<p>리스트에 없어요 직접 작성할래요</p>
+			{visible.searchCateListVisible && (
+				<div className="search-result-list">
+					{category.searchCategoryList.length > 0 && (
+						<ul>
+							{category.searchCategoryList.map((list) => (
+								<li key={list.id}>
+									{list.name}
+									<button onClick={() => handleSelectCategory(list)}>
+										선택
+									</button>
+								</li>
+							))}
+						</ul>
+					)}
+					<div className="user-write-area">
+						<p>검색 리스트에 없어요 직접 작성할래요</p>
 						<div>
 							직접 작성 :{" "}
 							<span>
@@ -247,15 +249,16 @@ const SearchCategory = ({ insertForm, onChangeForm }) => {
 								</button>
 							</span>
 						</div>
-					</>
-				)}
-			</div>
-			<div>
+					</div>
+				</div>
+			)}
+
+			{/* <div>
 				<button onClick={() => handleViewCategoryList()}>
 					카테고리 리스트 전체 보기
 				</button>
-			</div>
-			<div>
+			</div> */}
+			{/* <div className="search-result-all">
 				{visible.allCategoryList && (
 					<>
 						<button onClick={handleCloseCategoryList}>닫기</button>
@@ -270,8 +273,8 @@ const SearchCategory = ({ insertForm, onChangeForm }) => {
 						)}
 					</>
 				)}
-			</div>
-		</>
+			</div> */}
+		</SearchWriteStyle>
 	);
 };
 

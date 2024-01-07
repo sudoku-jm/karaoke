@@ -2,6 +2,7 @@ import React, { useCallback, useEffect, useState } from "react";
 import useInput from "../../hooks/useInput";
 import { Validation } from "../../func/common";
 import { useRouter } from "next/router";
+import { SearchAreaStyle } from "../../style/ContentStyle";
 
 const MainSearch = ({ queryString }) => {
 	const router = useRouter();
@@ -28,7 +29,7 @@ const MainSearch = ({ queryString }) => {
 	);
 
 	return (
-		<div>
+		<SearchAreaStyle>
 			<input
 				type="text"
 				value={schTxt}
@@ -39,7 +40,7 @@ const MainSearch = ({ queryString }) => {
 			<button name="schButton" onClick={handleSubmit}>
 				검색
 			</button>
-		</div>
+		</SearchAreaStyle>
 	);
 };
 

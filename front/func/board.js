@@ -70,10 +70,23 @@ const youtubeParser = (youtubeUrl, w, h) => {
 		}
 	};
 
+	const calculateAspectRatioHeight = (width) => {
+		let resultWh = {};
+		if ((resultWh.width = width == undefined)) {
+			resultWh.width = 560;
+			resultWh.height = 315;
+		} else {
+			const aspectRatio = 9 / 16; // 16:9 aspect ratio
+			resultWh.width = width;
+			resultWh.height = width * aspectRatio;
+		}
+		return resultWh;
+	};
+
 	const container = `
     <div class="video-container">
-      <iframe width=${w !== undefined ? w : 560} height=${
-		h !== undefined ? h : 315
+      <iframe width=${calculateAspectRatioHeight(w).width} height=${
+		calculateAspectRatioHeight(w).height
 	} src="https://www.youtube.com/embed/#ID#" title="YouTube video player"
         frameborder="0" allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture"
         allowfullscreen></iframe>

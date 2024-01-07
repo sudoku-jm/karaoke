@@ -111,7 +111,7 @@
     //vscode 상태표시 줄 활성화 여부
     "workbench.statusBar.visible": true,
     "prettier.tabWidth": 4,
-    "window.zoomLevel": -1,
+    "window.zoomLevel": -2,
     "git.autofetch": true
 
     //Preferences > Settings > Import Module Specifier 항목을 non-relative 로 변경한다.위와 같이 변경할 경우 jsconfig.json, tsconfig.json 에서 정의한 baseUrl, paths 설정에 근거해 import된다.

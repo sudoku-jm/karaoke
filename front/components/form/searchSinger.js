@@ -2,6 +2,7 @@ import React, { useCallback, useEffect, useState } from "react";
 import { useDispatch, useSelector } from "react-redux";
 import { SEARCH_SINGER_REQUEST } from "../../reducers/music";
 import { Validation } from "../../func/common";
+import { SearchWriteStyle } from "../../style/ContentStyle";
 
 const SearchSinger = ({ insertForm, onChangeForm }) => {
 	const dispatch = useDispatch();
@@ -145,8 +146,8 @@ const SearchSinger = ({ insertForm, onChangeForm }) => {
 	};
 
 	return (
-		<div>
-			<div>
+		<SearchWriteStyle $type="singer">
+			<div className="selected-area">
 				{Object.keys(form.selectedSinger).length > 0 ? (
 					<div>
 						<p>{form.selectedSinger.name}</p>
@@ -156,19 +157,21 @@ const SearchSinger = ({ insertForm, onChangeForm }) => {
 						<button onClick={handleRemoveSelected}>삭제</button>
 					</div>
 				) : (
-					<input
-						type="text"
-						name="singerName"
-						value={form.singerName}
-						onChange={handleInput}
-						placeholder="가수 검색"
-						onKeyUp={handleEnter}
-					/>
+					<div className="form-input">
+						<input
+							type="text"
+							name="singerName"
+							value={form.singerName}
+							onChange={handleInput}
+							placeholder="가수 검색"
+							onKeyUp={handleEnter}
+						/>
+					</div>
 				)}
 			</div>
 
 			{visible.searchSingerListVisible && (
-				<>
+				<div className="search-result-list">
 					{form.singerList.length > 0 && (
 						<ul>
 							{form.singerList.map((list) => (
@@ -181,48 +184,50 @@ const SearchSinger = ({ insertForm, onChangeForm }) => {
 							))}
 						</ul>
 					)}
-					<p>리스트에 없어요 직접 작성할래요</p>
-					<div>
-						직접 작성 :<br />
-						<input
-							type="text"
-							name="singerName"
-							value={form.singerName}
-							onChange={handleInput}
-							placeholder="가수 한국어명"
-						/>
-						<br />
-						<input
-							type="text"
-							name="singerEName"
-							value={form.singerEName}
-							onChange={handleInput}
-							placeholder="가수 영문명"
-						/>
-						<br />
-						<input
-							type="text"
-							name="singerJName"
-							value={form.singerJName}
-							onChange={handleInput}
-							placeholder="가수 일본어명"
-						/>
-						<button
-							onClick={() =>
-								handleSelectSinger({
-									id: 0,
-									name: form.singerName,
-									e_name: form.singerEName,
-									j_name: form.singerJName,
-								})
-							}
-						>
-							직접 작성 완료
-						</button>
+					<div className="user-write-area">
+						<p>검색 리스트에 없어요 직접 작성할래요</p>
+						<div>
+							직접 작성 :<br />
+							<input
+								type="text"
+								name="singerName"
+								value={form.singerName}
+								onChange={handleInput}
+								placeholder="가수 한국어명"
+							/>
+							<br />
+							<input
+								type="text"
+								name="singerEName"
+								value={form.singerEName}
+								onChange={handleInput}
+								placeholder="가수 영문명"
+							/>
+							<br />
+							<input
+								type="text"
+								name="singerJName"
+								value={form.singerJName}
+								onChange={handleInput}
+								placeholder="가수 일본어명"
+							/>
+							<button
+								onClick={() =>
+									handleSelectSinger({
+										id: 0,
+										name: form.singerName,
+										e_name: form.singerEName,
+										j_name: form.singerJName,
+									})
+								}
+							>
+								직접 작성 완료
+							</button>
+						</div>
 					</div>
-				</>
+				</div>
 			)}
-		</div>
+		</SearchWriteStyle>
 	);
 };
 

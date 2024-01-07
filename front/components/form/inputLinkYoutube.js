@@ -2,6 +2,7 @@ import React, { useCallback, useEffect, useState } from "react";
 import { Validation } from "../../func/common";
 import useDebouncedValidation from "../../hooks/useDebouncedValidation";
 import { youtubeParser } from "../../func/board";
+import { SearchWriteStyle } from "../../style/ContentStyle";
 
 const InputLinkYoutube = ({ insertForm, onChangeForm }) => {
 	const [form, setForm] = useState({
@@ -61,6 +62,14 @@ const InputLinkYoutube = ({ insertForm, onChangeForm }) => {
 		}));
 	}, []);
 
+	//작성란 지우기
+	const handleDeleteInputLink = useCallback(() => {
+		setForm((prev) => ({
+			...prev,
+			link: "",
+		}));
+	}, [form.link]);
+
 	//링크 추가
 	const handleAddLink = useCallback(() => {
 		const addLinks =
@@ -86,14 +95,9 @@ const InputLinkYoutube = ({ insertForm, onChangeForm }) => {
 	//링크 삭제
 	const handleRemoveLink = useCallback(
 		(link) => {
-			console.log("insertForm.link,", insertForm.link);
-			console.log("link,", link);
-
 			const result = insertForm.link
 				.split(",")
 				.filter((t) => t.trim() !== link.trim());
-
-			console.log("result", result);
 
 			const textFromUniqueLinks = result.join(",");
 
@@ -111,21 +115,29 @@ const InputLinkYoutube = ({ insertForm, onChangeForm }) => {
 	);
 
 	return (
-		<>
-			<input
-				type="text"
-				name="link"
-				value={form.link}
-				placeholder="유튜브 MR링크"
-				onChange={handleInput}
-			/>
+		<SearchWriteStyle $type="link">
+			<div className="form-input">
+				<input
+					type="text"
+					name="link"
+					value={form.link}
+					placeholder="유튜브 MR링크"
+					onChange={handleInput}
+				/>
+			</div>
 
 			{!Validation.isEmpty(form.link) && isTrueFalse && (
-				<button onClick={() => handleAddLink()}>
-					{insertForm.link.split(",").filter((t) => t.trim() !== "").length > 0
-						? " 링크 하나 더 추가"
-						: "해당 링크 추가"}
-				</button>
+				<div className="form-link-btn">
+					<button onClick={() => handleAddLink()}>
+						{insertForm.link.split(",").filter((t) => t.trim() !== "").length >
+						0
+							? " 링크 하나 더 추가"
+							: "해당 링크 추가"}
+					</button>
+					<button onClick={() => handleDeleteInputLink()}>
+						해당 링크 지우기
+					</button>
+				</div>
 			)}
 
 			{!Validation.isEmpty(form.link) && !isTrueFalse ? (
@@ -147,22 +159,27 @@ const InputLinkYoutube = ({ insertForm, onChangeForm }) => {
 			)}
 
 			{insertForm.link.split(",").filter((t) => t.trim() !== "").length > 0 && (
-				<h3>추가 된 영상 리스트</h3>
+				<div className="search-result-list">
+					<h3>추가 된 영상 리스트</h3>
+					{!Validation.isEmpty(insertForm.link) && (
+						<div className="links-added">
+							{insertForm.link.split(",").map((item, idx) => (
+								<figure>
+									<div
+										key={idx}
+										className="link-item"
+										dangerouslySetInnerHTML={{
+											__html: youtubeParser(item, 200),
+										}}
+									></div>
+									<button onClick={() => handleRemoveLink(item)}>삭제</button>
+								</figure>
+							))}
+						</div>
+					)}
+				</div>
 			)}
-			{!Validation.isEmpty(insertForm.link) &&
-				insertForm.link.split(",").map((item, idx) => (
-					<>
-						<div
-							key={idx}
-							className="link-lists"
-							dangerouslySetInnerHTML={{
-								__html: youtubeParser(item),
-							}}
-						></div>
-						<button onClick={() => handleRemoveLink(item)}>삭제</button>
-					</>
-				))}
-		</>
+		</SearchWriteStyle>
 	);
 };
 

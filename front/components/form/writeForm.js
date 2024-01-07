@@ -10,6 +10,9 @@ import { Validation } from "../../func/common";
 import InputTagsForm from "./inputTagsForm";
 import InputSingNumber from "./inputSingNumber";
 import InputLinkYoutube from "./inputLinkYoutube";
+import { PageWriteStyle } from "../../style/ContentStyle";
+import InputTitle from "./inputTitle";
+import InputContents from "./inputContents";
 
 const formInit = {
 	categoryId: "",
@@ -196,90 +199,85 @@ const WriteForm = ({ insertType }) => {
 	}, []);
 
 	return (
-		<section>
+		<PageWriteStyle>
 			<Top insertType={insertType} />
-			<SearchCategory insertForm={insertForm} onChangeForm={setInsertForm} />
-			<SearchSinger insertForm={insertForm} onChangeForm={setInsertForm} />
-			<input
-				type="text"
-				name="title"
-				placeholder="노래 제목"
-				value={insertForm.title}
-				onChange={handleInput}
-			/>
-			<InputSingNumber insertForm={insertForm} handleInput={handleInput} />
+			<article className="form-wrap">
+				<SearchCategory insertForm={insertForm} onChangeForm={setInsertForm} />
+				<SearchSinger insertForm={insertForm} onChangeForm={setInsertForm} />
+				<InputTitle insertForm={insertForm} handleInput={handleInput} />
+				<InputSingNumber insertForm={insertForm} handleInput={handleInput} />
 
-			<InputLinkYoutube insertForm={insertForm} onChangeForm={setInsertForm} />
+				<InputLinkYoutube
+					insertForm={insertForm}
+					onChangeForm={setInsertForm}
+				/>
 
-			<InputTagsForm
-				insertForm={insertForm}
-				handleInput={handleInput}
-				handleRemoveTag={handleRemoveTag}
-				handleAddTag={handleAddTag}
-			/>
-			<textarea
-				name="contents"
-				maxLength={150}
-				value={insertForm.contents}
-				placeholder="건의하고 싶은 사항이나, 문의 등..."
-				onChange={handleInput}
-			></textarea>
-			{/* <Menu /> */}
+				<InputTagsForm
+					insertForm={insertForm}
+					handleInput={handleInput}
+					handleRemoveTag={handleRemoveTag}
+					handleAddTag={handleAddTag}
+				/>
 
-			{/* 요청하고 난 뒤 데이터 확인 */}
-			{insertMusicDone && insertMusicResult !== null && (
-				<div>
-					{!Validation.isEmptyObject(resultData.beforeData) && (
-						<>
-							{insertForm.new == "Y"
-								? "이미 해당 번호의 노래가 있습니다."
-								: "노래 수정 요청을 했습니다."}
+				<InputContents insertForm={insertForm} handleInput={handleInput} />
+
+				{/* <Menu /> */}
+
+				{/* 요청하고 난 뒤 데이터 확인 */}
+				{insertMusicDone && insertMusicResult !== null && (
+					<div>
+						{!Validation.isEmptyObject(resultData.beforeData) && (
+							<>
+								{insertForm.new == "Y"
+									? "이미 해당 번호의 노래가 있습니다."
+									: "노래 수정 요청을 했습니다."}
+								<div>
+									기존 노래에요.
+									<br />
+									노래 제목 : {resultData.beforeData.title}
+									<br />
+									태진번호 : {resultData.beforeData.taejin}
+									<br />
+									금영번호 : {resultData.beforeData.keumyong}
+									<br />
+								</div>
+								{/* {resultData.beforeData} */}
+							</>
+						)}
+						<br />
+
+						{!Validation.isEmptyObject(resultData.newData) && (
 							<div>
-								기존 노래에요.
+								요청하신 데이터에용 :<br />
+								노래 제목 : {resultData.newData.b_title} <br />
+								요청 가수 : {resultData.newData.b_singer} <br />
+								요청 가수 영문명 : {resultData.newData.b_e_singer}
 								<br />
-								노래 제목 : {resultData.beforeData.title}
+								요청 가수 일본어명 : {resultData.newData.b_j_singer}
 								<br />
-								태진번호 : {resultData.beforeData.taejin}
-								<br />
-								금영번호 : {resultData.beforeData.keumyong}
-								<br />
+								금영번호 : {resultData.newData.b_keumyong} <br />
+								태진번호 : {resultData.newData.b_taejin} <br />
+								카테고리 : {resultData.newData.b_category} <br />
+								요청 태그 : {resultData.newData.b_tags} <br />
+								요청 유튜브 링크 : {resultData.newData.b_link}
+								{!Validation.isEmpty(resultData.newData.b_link) &&
+									resultData.newData.b_link.split(",").map((item, idx) => (
+										<>
+											<div
+												key={idx}
+												className="link-item"
+												dangerouslySetInnerHTML={{
+													__html: youtubeParser(item),
+												}}
+											></div>
+										</>
+									))}
 							</div>
-							{/* {resultData.beforeData} */}
-						</>
-					)}
-					<br />
-
-					{!Validation.isEmptyObject(resultData.newData) && (
-						<div>
-							요청하신 데이터에용 :<br />
-							노래 제목 : {resultData.newData.b_title} <br />
-							요청 가수 : {resultData.newData.b_singer} <br />
-							요청 가수 영문명 : {resultData.newData.b_e_singer}
-							<br />
-							요청 가수 일본어명 : {resultData.newData.b_j_singer}
-							<br />
-							금영번호 : {resultData.newData.b_keumyong} <br />
-							태진번호 : {resultData.newData.b_taejin} <br />
-							카테고리 : {resultData.newData.b_category} <br />
-							요청 태그 : {resultData.newData.b_tags} <br />
-							요청 유튜브 링크 : {resultData.newData.b_link}
-							{!Validation.isEmpty(resultData.newData.b_link) &&
-								resultData.newData.b_link.split(",").map((item, idx) => (
-									<>
-										<div
-											key={idx}
-											className="link-lists"
-											dangerouslySetInnerHTML={{
-												__html: youtubeParser(item),
-											}}
-										></div>
-									</>
-								))}
-						</div>
-					)}
-				</div>
-			)}
-		</section>
+						)}
+					</div>
+				)}
+			</article>
+		</PageWriteStyle>
 	);
 };
 

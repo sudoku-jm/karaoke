@@ -102,7 +102,7 @@ const BoardListRequest = ({
 							<>
 								{/* <span
 									key={idx}
-									className="link-lists"
+									className="link-item"
 									dangerouslySetInnerHTML={{
 										__html: youtubeParser(item, 150, 100),
 									}}

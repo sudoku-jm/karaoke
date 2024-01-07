@@ -1,6 +1,9 @@
 import { createGlobalStyle } from "styled-components";
 import reset from "styled-reset";
+import styled from "styled-components";
+
 const GlobalStyle = createGlobalStyle`
+    ${reset}
     :root {
         --color-primary: #437ef7;
         --color-secondary: #f5faff;
@@ -32,8 +35,56 @@ const GlobalStyle = createGlobalStyle`
         --color-background-FBFBFB : #FBFBFB;
         --color-gradient : linear-gradient(180deg, #5C6A82 0%, #272D37 100%);
     }
-
-    ${reset}
+    
 `;
 
-export { GlobalStyle };
+const CommonStyle = styled.section`
+	* {
+		font-family: "Noto Sans KR", sans-serif;
+		box-sizing: border-box;
+	}
+
+	input[type="text"],
+	select,
+	textarea {
+		padding: 10px;
+		border: 1px solid var(--color-border1);
+	}
+
+	button {
+		border: none;
+	}
+
+	header {
+		position: relative;
+		padding: 10px;
+		width: 100%;
+		height: 65px;
+		h2 {
+			position: absolute;
+			top: 50%;
+			left: 50%;
+			transform: translate(-50%, -50%);
+			font-size: 18px;
+		}
+
+		a,
+		button {
+			position: absolute;
+			top: 50%;
+			transform: translateY(-50%);
+			background: none;
+			font-size: 16px;
+			font-weight: 700;
+		}
+		.cancel {
+			left: 20px;
+		}
+		.insert {
+			right: 20px;
+			color: var(--color-primary);
+		}
+	}
+`;
+
+export { GlobalStyle, CommonStyle };
