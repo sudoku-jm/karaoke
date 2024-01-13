@@ -5,6 +5,7 @@ import Link from "next/link";
 
 const BoardListRequest = ({
 	board,
+	pageType,
 	handleInsertCategory,
 	handleInsertSinger,
 	handleInsertMusic,
@@ -46,9 +47,11 @@ const BoardListRequest = ({
 					<>
 						{b_category}
 						<br />
-						<button onClick={() => handleInsertCategory(id, b_category)}>
-							카테고리 추가
-						</button>
+						{pageType == "ADMIN" && (
+							<button onClick={() => handleInsertCategory(id, b_category)}>
+								카테고리 추가
+							</button>
+						)}
 					</>
 				)}
 			</td>
@@ -70,13 +73,15 @@ const BoardListRequest = ({
 						<br />
 						{b_j_singer}
 						<br />
-						<button
-							onClick={() =>
-								handleInsertSinger(id, b_singer, b_e_singer, b_j_singer)
-							}
-						>
-							가수 추가
-						</button>
+						{pageType == "ADMIN" && (
+							<button
+								onClick={() =>
+									handleInsertSinger(id, b_singer, b_e_singer, b_j_singer)
+								}
+							>
+								가수 추가
+							</button>
+						)}
 					</>
 				)}
 			</td>
@@ -120,16 +125,26 @@ const BoardListRequest = ({
 			</td>
 			<td>{b_contents}</td>
 			<td>
-				{board.new == "Y" ? (
+				{pageType == "ADMIN" && (
 					<>
-						{MusicId == null && CategoryId !== null && SingerId !== null && (
-							<button onClick={() => handleInsertMusic(board)}>음악추가</button>
-						)}
-					</>
-				) : (
-					<>
-						{CategoryId !== null && SingerId !== null && (
-							<button onClick={() => handleInsertMusic(board)}>음악추가</button>
+						{board.new == "Y" ? (
+							<>
+								{MusicId == null &&
+									CategoryId !== null &&
+									SingerId !== null && (
+										<button onClick={() => handleInsertMusic(board)}>
+											음악추가
+										</button>
+									)}
+							</>
+						) : (
+							<>
+								{CategoryId !== null && SingerId !== null && (
+									<button onClick={() => handleInsertMusic(board)}>
+										음악추가
+									</button>
+								)}
+							</>
 						)}
 					</>
 				)}

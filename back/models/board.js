@@ -67,8 +67,8 @@ module.exports = (sequelize, DataTypes) => {
         {
             modelName: "Board",
             tableName: "boards",
-            charset: "utf8", //이모티콘 : utf8mb4
-            collate: "utf8_general_ci",
+            charset: "utf8mb4", //이모티콘 : utf8mb4
+            collate: "utf8mb4_unicode_ci",
             paranoid: true,
         }
     );

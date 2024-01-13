@@ -2,110 +2,204 @@ import styled from "styled-components";
 import { media } from "./media";
 
 export const Container = styled.main`
-    margin: 0 auto;
-    width: 768px;
-    ${media.tablet`
+	margin: 0 auto;
+	width: 768px;
+	${media.tablet`
 		width:100%;
 	`}
 `;
 
 export const BoardRequestListStyle = styled.div`
-    h3 {
-        font-size: 1.8rem;
-    }
-    tr {
-        th {
-            font-weight: 700;
-        }
-        th,
-        td {
-            padding: 10px 5px;
-            border-bottom: 1px solid var(--color-border1);
-        }
-        &.modify {
-            td {
-                background: var(--color-ref-bg);
-            }
-        }
-    }
-    .link {
-        font-size: 12px;
-        word-break: break-all;
-    }
-    .sing-code {
-        padding: 4px;
-        background: var(--color-secondary);
-        font-weight: 700;
-        font-size: 14px;
-    }
+	h3 {
+		font-size: 1.8rem;
+	}
+	tr {
+		th {
+			font-weight: 700;
+		}
+		th,
+		td {
+			padding: 10px 5px;
+			border-bottom: 1px solid var(--color-border1);
+		}
+		&.modify {
+			td {
+				background: var(--color-ref-bg);
+			}
+		}
+	}
+	.link {
+		font-size: 12px;
+		word-break: break-all;
+	}
+	.sing-code {
+		padding: 4px;
+		background: var(--color-secondary);
+		font-weight: 700;
+		font-size: 14px;
+	}
 `;
 
 export const MainContainerStyle = styled.main`
-    padding: 40px 10px;
-    .main__title {
-        font-size: 2rem;
-        font-weight: 700;
-    }
+	padding: 40px 10px;
+	.main__title {
+		font-size: 2rem;
+		font-weight: 700;
+	}
 `;
 
 export const SearchAreaStyle = styled.section`
-    margin: 20px auto;
-    position: relative;
-    input {
-        padding: 10px 60px 10px 10px;
-        width: 100%;
-    }
-    button {
-        position: absolute;
-        top: 0;
-        right: 0;
-        padding: 10px;
-        width: 60px;
-        font-size: 16px;
-    }
+	margin: 20px auto;
+	position: relative;
+	input {
+		padding: 10px 60px 10px 10px;
+		width: 100%;
+	}
+	button {
+		position: absolute;
+		top: 0;
+		right: 0;
+		padding: 10px;
+		width: 60px;
+		font-size: 16px;
+	}
 `;
 
 export const PopualRankKeywordListStyle = styled.div`
-    .time-zone {
-        display: flex;
-        justify-content: space-between;
-        width: 100%;
+	.time-zone {
+		display: flex;
+		justify-content: space-between;
+		width: 100%;
 
-        & > span,
-        & > em {
-            margin: 5px;
-            font-size: 12px;
-            color: var(--color-grey-b0);
-        }
-    }
-    ul {
-        margin: 10px 0;
-        li {
-            a {
-            }
-        }
-    }
+		& > span,
+		& > em {
+			margin: 5px;
+			font-size: 12px;
+			color: var(--color-grey-b0);
+		}
+	}
+	ul {
+		margin: 10px 0;
+		li {
+			a {
+			}
+		}
+	}
 `;
 
-export const PageWriteStyle = styled.section`
-    position: fixed;
+const PopupDefaultStyle = `
+	position: fixed;
     top: 0;
     left: 0;
     width: 100%;
     height: 100vh;
-    background-color: var(--color-white);
-    overflow-y: auto;
-    z-index: 10;
-    .form-wrap {
-        padding: 20px;
-    }
+	z-index: 10;
+`;
+
+const FormStyle = `
+	.form-viewer{
+		margin:20px auto;
+		
+		& > p{
+			font-weight:700;
+			margin:30px 0 10px 0;
+		}
+		ul{
+			li{
+				display:flex;
+				justify-content:space-between;
+				padding:15px 0;
+				border-bottom:1px solid var(--color-border1);
+				em{
+					font-size:14px;
+					&:first-child{
+						color:var(--color-grey-B8B8B8);
+					}
+					&:last-child{
+						color:var(--color-black0);
+					}
+				}
+			}
+		}
+		.links{
+			padding:10px 0;
+			& > em{
+				display:block;
+				margin-bottom:10px;
+				color:var(--color-grey-B8B8B8);
+			}
+		}
+	}	
+
+
+`;
+
+export const PageWriteStyle = styled.section`
+	${({}) => {
+		let styles = "";
+		styles += PopupDefaultStyle;
+		styles += FormStyle;
+
+		styles += `
+		background-color: var(--color-white);
+		overflow-y: auto;
+		.form-wrap {
+			padding: 20px; 
+			& > h3{
+				margin-bottom:10px;
+				text-align:center;
+				font-size:24px;
+			}
+			& > p {
+				line-height:1.4;
+				text-align:center;
+				font-size:18px;
+			}
+		}
+		
+		`;
+
+		return styles;
+	}}
+`;
+
+export const PopupInsertResultStyle = styled.section`
+	${({}) => {
+		let styles = "";
+		styles += PopupDefaultStyle;
+
+		styles += `
+			background:var(--color-white);
+			height:100vh;
+			overflow-y:auto;
+			.btn-wrap{
+				margin:0 auto 60px auto;
+				display:flex;
+				justify-content: center;
+				a,
+				button{
+					display:inline-block;
+					text-decoration: none;
+				}
+			}
+			.btn-link{
+				margin:0 auto;
+				padding:15px;
+				background:var(--color-primary);
+				color:var(--color-white);
+				font-size:14px;
+			}
+		`;
+
+		return styles;
+	}}
 `;
 
 export const SearchWriteStyle = styled.div`
-    ${({ $type }) => {
-        let styles = "";
+	${({ $type }) => {
+		let styles = "";
 
-        styles += `
+		styles += `
 		.form-input {
 			input,
 			select {
@@ -187,8 +281,8 @@ export const SearchWriteStyle = styled.div`
 		}
 		`;
 
-        if ($type == "tag") {
-            styles += `
+		if ($type == "tag") {
+			styles += `
 			.form-input {
 				display: block;
 				margin: 10px 0;
@@ -218,8 +312,8 @@ export const SearchWriteStyle = styled.div`
 				}
 			}
 			`;
-        } else {
-            styles += `
+		} else {
+			styles += `
 			.form-input {
 				display: block;
 				margin: 10px 0;
@@ -229,9 +323,9 @@ export const SearchWriteStyle = styled.div`
 				}
 			}
 			`;
-        }
+		}
 
-        styles += `
+		styles += `
 			.form-link-btn {
 				margin: 10px 0;
 				button {
@@ -240,8 +334,8 @@ export const SearchWriteStyle = styled.div`
 				}
 			}`;
 
-        if ($type == "link") {
-            styles += `
+		if ($type == "link") {
+			styles += `
 				.links-added{
 					margin-top:10px;
 					figure{
@@ -259,10 +353,10 @@ export const SearchWriteStyle = styled.div`
 					}
 				}
 			`;
-        }
+		}
 
-        if ($type == "singer") {
-            styles += `
+		if ($type == "singer") {
+			styles += `
 			.selected-item{
 				.en,
 				.jp{
@@ -284,8 +378,8 @@ export const SearchWriteStyle = styled.div`
 				}
 			}
 			`;
-        }
+		}
 
-        return styles;
-    }}
+		return styles;
+	}}
 `;

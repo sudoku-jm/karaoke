@@ -169,7 +169,7 @@ const index = () => {
 								return (
 									<BoardListRequest
 										key={board.id}
-										pageType="BOARD"
+										pageType="ADMIN"
 										board={board}
 										handleInsertCategory={handleInsertCategory}
 										handleInsertSinger={handleInsertSinger}

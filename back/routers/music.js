@@ -229,6 +229,7 @@ router.post("/insertBoard", async (req, res, next) => {
         //카테고리 아이디
         let cateId = "";
         let category = {};
+        console.log("req.body.categoryId??", req.body.categoryId);
         if (req.body.categoryId !== "") {
             //카테고리 아이디가 빈값이 아닐 때
             cateId = req.body.categoryId;
@@ -402,7 +403,9 @@ router.post("/insertBoard", async (req, res, next) => {
         }
 
         // 게시글 추가.
-        await Board.create({ ...form, raw: true });
+        const newRequest = await Board.create({ ...form, raw: true });
+
+        form.b_id = newRequest.id;
 
         res.status(200).json({
             data: {

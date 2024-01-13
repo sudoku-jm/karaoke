@@ -5,7 +5,7 @@
     "database": "otakukaraoke",
     "host": "127.0.0.1",
     "dialect": "mysql",
-    "timezone": "Asia/Seoul"
+    "timezone": "+09:00"
   },
   "test": {
     "username": "root",
@@ -13,7 +13,7 @@
     "database": "otakukaraoke",
     "host": "127.0.0.1",
     "dialect": "mysql",
-    "timezone": "Asia/Seoul"
+    "timezone": "+09:00"
   },
   "production": {
     "username": "root",
@@ -21,6 +21,6 @@
     "database": "otakukaraoke",
     "host": "127.0.0.1",
     "dialect": "mysql",
-    "timezone": "Asia/Seoul"
+    "timezone": "+09:00"
   }
 }
