@@ -28,7 +28,7 @@ const MainCon = () => {
 	return (
 		<MainContainerStyle>
 			<h1 className="main__title">intro</h1>
-			<MainSearch />
+			<MainSearch $pageType="MAIN" />
 			<PopualRankKeywordList />
 			<RankList />
 			<ButtonWrite

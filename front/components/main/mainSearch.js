@@ -4,7 +4,7 @@ import { Validation } from "../../func/common";
 import { useRouter } from "next/router";
 import { SearchAreaStyle } from "../../style/ContentStyle";
 
-const MainSearch = ({ queryString }) => {
+const MainSearch = ({ queryString, pageType }) => {
 	const router = useRouter();
 	const [schTxt, handleChange, setSchTxt] = useInput("");
 
@@ -29,7 +29,7 @@ const MainSearch = ({ queryString }) => {
 	);
 
 	return (
-		<SearchAreaStyle>
+		<SearchAreaStyle $pageType={pageType}>
 			<input
 				type="text"
 				value={schTxt}

@@ -1,9 +1,11 @@
 import React, { useCallback, useEffect, useState } from "react";
 import { useDispatch } from "react-redux";
 import { handleInsert } from "../../reducers/music";
+import { useRouter } from "next/router";
 
 const Top = ({ insertType }) => {
 	const dispatch = useDispatch();
+	const router = useRouter();
 	const [form, setForm] = useState({
 		pageTitle: "",
 	});
@@ -18,6 +20,9 @@ const Top = ({ insertType }) => {
 					break;
 				case "MODIFY":
 					title = "수정 요청";
+					break;
+				case "SEARCH":
+					title = "검색 결과";
 					break;
 				default:
 					break;
@@ -42,19 +47,22 @@ const Top = ({ insertType }) => {
 		//수정하기 누를 때 해당 페이지 주소 로컬이나 세션스토리지에 저장.
 		//돌아가기 누르면 삭제
 		//해당 데이터가 없으면 메인으로 이동
+		router.push("/");
 	};
 	return (
 		<header>
-			{insertType == "MODIFY" && (
-				<button obClick={handleCancelClick} className="cancel">
-					취소
+			{(insertType == "MODIFY" || insertType == "SEARCH") && (
+				<button onClick={handleCancelClick} className="prev">
+					이전
 				</button>
 			)}
 			<h2>{form.pageTitle}</h2>
 
-			<button onClick={handleWirteClick} className="insert">
-				요청
-			</button>
+			{(insertType == "MODIFY" || insertType == "NEW") && (
+				<button onClick={handleWirteClick} className="insert">
+					요청
+				</button>
+			)}
 		</header>
 	);
 };

@@ -48,21 +48,39 @@ export const MainContainerStyle = styled.main`
 	}
 `;
 
+export const SearchListContainerStyle = styled.main`
+	padding: 0 10px;
+`;
+
 export const SearchAreaStyle = styled.section`
-	margin: 20px auto;
-	position: relative;
-	input {
-		padding: 10px 60px 10px 10px;
-		width: 100%;
-	}
-	button {
-		position: absolute;
-		top: 0;
-		right: 0;
-		padding: 10px;
-		width: 60px;
-		font-size: 16px;
-	}
+	${({ $pageType }) => {
+		let styles = "";
+		if ($pageType == "SEARCH") {
+			styles += `
+				margin: 0 auto;
+			`;
+		} else {
+			styles += `
+				margin: 20px auto;
+			`;
+		}
+		styles += `
+		position: relative;
+		input {
+			padding: 10px 60px 10px 10px;
+			width: 100%;
+		}
+		button {
+			position: absolute;
+			top: 0;
+			right: 0;
+			padding: 10px;
+			width: 60px;
+			font-size: 16px;
+		}
+		`;
+		return styles;
+	}}
 `;
 
 export const PopualRankKeywordListStyle = styled.div`
