@@ -15,11 +15,18 @@ const MusicInfo = () => {
 	const router = useRouter();
 	const dispatch = useDispatch();
 	const id = router.query?.musicId;
+	const schTxt = router.query?.schTxt;
 	const [flag, setFlag] = useState(true);
 
 	//상세 페이지 정보 API 호출
 	useEffect(() => {
-		if (!Validation.isEmpty(id) && id !== undefined) {
+		console.log("id", id);
+		if (
+			!Validation.isEmpty(id) &&
+			id !== undefined &&
+			id !== "null" &&
+			id !== null
+		) {
 			dispatch({
 				type: MUSIC_INFO_REQUEST,
 				id,
@@ -30,13 +37,15 @@ const MusicInfo = () => {
 			});
 
 			setFlag(!flag);
+		} else {
+			router.push("/");
 		}
 	}, [id]);
 
 	return (
 		<AppLayout>
 			<Top insertType="MUSIC_DETAIL" flag={flag} />
-			<SearchDetailCon />
+			<SearchDetailCon schTxt={schTxt} />
 		</AppLayout>
 	);
 };

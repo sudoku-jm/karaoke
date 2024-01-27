@@ -30,6 +30,12 @@ const MusicItem = ({ music, schTxt }) => {
 		router.push(url);
 	};
 	const handleMusicModify = (id) => {
+		const txt = encodeURIComponent(schTxt);
+		const tt = encodeURIComponent(title);
+		sessionStorage.setItem("musicId", id);
+		sessionStorage.setItem("schTxt", txt);
+		sessionStorage.setItem("musicTitle", tt);
+		sessionStorage.setItem("isList", true);
 		router.push(`/music/modify?id=${id}`);
 	};
 	const handleItemSideBtn = (e) => {

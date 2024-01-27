@@ -37,11 +37,11 @@ const MusicDetail = ({ music }) => {
 					<ul>
 						<li>
 							<em>금영</em>
-							<em>{music.keumyong}</em>
+							<em className="num">{music.keumyong}</em>
 						</li>
 						<li>
 							<em>태진</em>
-							<em> {music.taejin}</em>
+							<em className="num"> {music.taejin}</em>
 						</li>
 					</ul>
 				</div>

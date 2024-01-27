@@ -627,6 +627,10 @@ export const SearchDetailContainerStyle = styled.main`
 					border-radius:20px;
 					overflow:hidden;
 				}
+				.num{
+					color: var(--color-primary) !important;
+					font-weight:700;
+				}
 				.form-cols{
 					margin:60px auto;
 					&.col3{

@@ -82,6 +82,7 @@ const CommonStyle = styled.section`
 		.cancel {
 			left: 20px;
 		}
+		.right,
 		.insert {
 			right: 20px;
 			color: var(--color-primary);

@@ -47,6 +47,11 @@ const Top = ({ insertType, flag }) => {
 		}
 	}, [insertType]);
 
+	//수정요청 페이지 이동
+	const handleModifyLink = () => {
+		router.push(`/music/modify?id=${router.query?.musicId}`);
+	};
+
 	//취소
 	const handleCancelClick = useCallback(() => {
 		//검색리스트로 돌아가기
@@ -56,6 +61,13 @@ const Top = ({ insertType, flag }) => {
 		if (insertType == "MUSIC_DETAIL") {
 			// 검색 페이지도 이동
 			router.push(`/search/${queryStringToObject(location.search)?.schTxt}`);
+		} else if (insertType == "MODIFY") {
+			//곡 상세 페이지로 이동
+			const schTxt = sessionStorage.getItem("schTxt");
+			const musicId = sessionStorage.getItem("musicId");
+			const title = sessionStorage.getItem("musicTitle");
+
+			router.push(`/music/${musicId}?schTxt=${schTxt}&title=${title}`);
 		} else {
 			//메인으로 이동
 			router.push("/");
@@ -63,11 +75,14 @@ const Top = ({ insertType, flag }) => {
 	}, [insertType]);
 	return (
 		<header>
-			{(insertType == "MODIFY" ||
-				insertType == "SEARCH" ||
-				insertType == "MUSIC_DETAIL") && (
+			{(insertType == "SEARCH" || insertType == "MUSIC_DETAIL") && (
 				<button onClick={handleCancelClick} className="prev">
 					이전
+				</button>
+			)}
+			{insertType == "MODIFY" && (
+				<button onClick={handleCancelClick} className="prev">
+					취소
 				</button>
 			)}
 
@@ -76,6 +91,12 @@ const Top = ({ insertType, flag }) => {
 			{(insertType == "MODIFY" || insertType == "NEW") && (
 				<button onClick={handleWirteClick} className="insert">
 					요청
+				</button>
+			)}
+
+			{insertType == "MUSIC_DETAIL" && (
+				<button onClick={handleModifyLink} className="right">
+					수정요청
 				</button>
 			)}
 		</header>

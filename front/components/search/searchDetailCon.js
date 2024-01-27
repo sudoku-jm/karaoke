@@ -4,7 +4,7 @@ import MusicDetail from "../music/musicDetail";
 import MusicDetailOtherList from "../music/musicDatailOtherList";
 import { useSelector } from "react-redux";
 
-const SearchDetailCon = () => {
+const SearchDetailCon = ({ schTxt }) => {
 	const { musicInfoDone, musicInfo, musicChanInfoDone, musicChanInfo } =
 		useSelector((state) => state.music);
 	const [music, setMusic] = useState({});
@@ -14,11 +14,19 @@ const SearchDetailCon = () => {
 	});
 
 	useEffect(() => {
-		if (musicInfoDone) {
+		if (musicInfoDone && musicInfo.resultData !== null) {
 			setMusic(musicInfo.resultData);
+
+			console.log("musicInfo.resultData", musicInfo.resultData);
+
+			sessionStorage.setItem("musicId", musicInfo.resultData.id);
+			sessionStorage.setItem("schTxt", schTxt);
+			sessionStorage.setItem("musicTitle", musicInfo.resultData.title);
+			sessionStorage.setItem("isList", false);
 		}
 		if (musicChanInfoDone) {
 			setMusicList((prev) => ({
+				...prev,
 				tagCateList: musicChanInfo.musicUniqDataList,
 				singerList: musicChanInfo.musicSingerList,
 			}));
@@ -50,31 +58,6 @@ const SearchDetailCon = () => {
 					)}
 				</div>
 			)}
-
-			{/* {musicList.singerList?.length > 0 && (
-				<>
-					<h3>연관 가수 음악</h3>
-					{musicList.singerList?.map((item) => (
-						<div key={item.id}>
-							제목 : {item.title}
-							<br />
-							가수 : {item.Singer?.name}
-							<br />
-							가수 : {item.Singer?.e_name}
-							<br />
-							가수 : {item.Singer?.j_name}
-							<br />
-							카테고리 : {item.Category?.name}
-							<br />
-							keumyong : {item.keumyong}
-							<br />
-							taejin : {item.taejin}
-							<br />
-							<Link href={`/music/${item.id}`}>상세보기</Link>
-						</div>
-					))}
-				</>
-			)} */}
 		</SearchDetailContainerStyle>
 	);
 };
