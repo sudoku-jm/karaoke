@@ -64,15 +64,26 @@ const debounce = (func, delay) => {
 
 //쿼리스트링API
 const queryStringFunc = (params) => {
-	return (
-		Object.keys(params)
-			// .filter((key) => params[key] !== "") // 빈 값을 필터링
-			.map(
-				(key) =>
-					`${encodeURIComponent(key)}=${encodeURIComponent(params[key])}`,
-			)
-			.join("&")
-	);
+	return Object.keys(params)
+		.filter((key) => params[key] !== "") // 빈 값을 필터링
+		.map(
+			(key) => `${encodeURIComponent(key)}=${encodeURIComponent(params[key])}`,
+		)
+		.join("&");
 };
 
-export { Validation, debounce, queryStringFunc };
+const queryStringToObject = (queryString) => {
+	// URLSearchParams 객체 생성
+	const params = new URLSearchParams(queryString);
+
+	// 쿼리스트링을 객체로 변환
+	const queryObject = {};
+
+	for (const [key, value] of params) {
+		queryObject[key] = value;
+	}
+
+	return queryObject;
+};
+
+export { Validation, debounce, queryStringFunc, queryStringToObject };

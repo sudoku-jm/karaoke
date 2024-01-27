@@ -121,7 +121,9 @@ const WriteForm = ({ insertType }) => {
 				}
 				if (insertForm.tag !== "") {
 					const beforeTags = insertForm.tags;
-					const updateTag = `#${insertForm.tag}`;
+					// let updateTag = `#${insertForm.tag}`;
+					let updateTag = insertForm.tag.replace(/,/g, "").replace(/、/g, "");
+					updateTag = `#${updateTag}`;
 					const tags = beforeTags + updateTag;
 					setInsertForm((prev) => ({
 						...prev,
@@ -156,10 +158,10 @@ const WriteForm = ({ insertType }) => {
 			case "taejin":
 				newValue = Validation.inputOnlyNum(newValue);
 				break;
-			case "tag":
-				newValue = Validation.replaceTagsText(newValue);
+			// case "tag":
+			// 	newValue = Validation.replaceTagsText(newValue);
 
-				break;
+			// 	break;
 			default:
 				break;
 		}

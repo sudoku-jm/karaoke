@@ -47,7 +47,7 @@ const board = {
 	},
 };
 
-const youtubeParser = (youtubeUrl, w, h) => {
+const youtubeParser = (youtubeUrl, w, h, unit) => {
 	const getVideoIdFromShortUrl = (url) => {
 		const urlObject = new URL(url);
 		const pathSegments = urlObject.pathname.split("/");
@@ -75,6 +75,10 @@ const youtubeParser = (youtubeUrl, w, h) => {
 		if ((resultWh.width = width == undefined)) {
 			resultWh.width = 560;
 			resultWh.height = 315;
+		} else if (unit == "persent" && width == 100) {
+			const aspectRatio = 9 / 16; // 16:9 aspect ratio
+			resultWh.width = window.innerWidth - 30;
+			resultWh.height = window.innerWidth * aspectRatio;
 		} else {
 			const aspectRatio = 9 / 16; // 16:9 aspect ratio
 			resultWh.width = width;

@@ -50,7 +50,7 @@ module.exports = (sequelize, DataTypes) => {
                 allowNull: true,
             },
             b_tags: {
-                type: DataTypes.STRING(20),
+                type: DataTypes.STRING(200),
                 allowNull: true,
             },
             new: {

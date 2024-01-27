@@ -226,6 +226,12 @@ router.post("/insertBoard", async (req, res, next) => {
             });
         }
 
+        if (req.body.tags.length > 200) {
+            return res.status(202).json({
+                msg: "태그 길이가 초과되었습니다",
+            });
+        }
+
         //카테고리 아이디
         let cateId = "";
         let category = {};

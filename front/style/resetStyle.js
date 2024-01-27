@@ -33,6 +33,7 @@ const GlobalStyle = createGlobalStyle`
         --color-blue-8B99B7 : #8B99B7;
         --color-background-F8FAFF: #F8FAFF;
         --color-background-FBFBFB : #FBFBFB;
+        --color-background-EEF2FF : #eef2ff;
         --color-gradient : linear-gradient(180deg, #5C6A82 0%, #272D37 100%);
     }
     
@@ -84,6 +85,19 @@ const CommonStyle = styled.section`
 		.insert {
 			right: 20px;
 			color: var(--color-primary);
+		}
+	}
+
+	.cursor-p {
+		cursor: pointer;
+	}
+	.btn-wrap {
+		display: flex;
+		justify-content: center;
+		&.col2 {
+			button {
+				width: 50%;
+			}
 		}
 	}
 `;

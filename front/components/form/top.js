@@ -2,8 +2,9 @@ import React, { useCallback, useEffect, useState } from "react";
 import { useDispatch } from "react-redux";
 import { handleInsert } from "../../reducers/music";
 import { useRouter } from "next/router";
+import { queryStringToObject } from "../../func/common";
 
-const Top = ({ insertType }) => {
+const Top = ({ insertType, flag }) => {
 	const dispatch = useDispatch();
 	const router = useRouter();
 	const [form, setForm] = useState({
@@ -24,6 +25,11 @@ const Top = ({ insertType }) => {
 				case "SEARCH":
 					title = "검색 결과";
 					break;
+
+				case "MUSIC_DETAIL":
+					title = queryStringToObject(location.search)?.title;
+					break;
+
 				default:
 					break;
 			}
@@ -32,7 +38,7 @@ const Top = ({ insertType }) => {
 				pageTitle: title,
 			});
 		}
-	}, [insertType]);
+	}, [insertType, flag]);
 
 	//요청
 	const handleWirteClick = useCallback(() => {
@@ -42,20 +48,29 @@ const Top = ({ insertType }) => {
 	}, [insertType]);
 
 	//취소
-	const handleCancelClick = () => {
+	const handleCancelClick = useCallback(() => {
 		//검색리스트로 돌아가기
 		//수정하기 누를 때 해당 페이지 주소 로컬이나 세션스토리지에 저장.
 		//돌아가기 누르면 삭제
 		//해당 데이터가 없으면 메인으로 이동
-		router.push("/");
-	};
+		if (insertType == "MUSIC_DETAIL") {
+			// 검색 페이지도 이동
+			router.push(`/search/${queryStringToObject(location.search)?.schTxt}`);
+		} else {
+			//메인으로 이동
+			router.push("/");
+		}
+	}, [insertType]);
 	return (
 		<header>
-			{(insertType == "MODIFY" || insertType == "SEARCH") && (
+			{(insertType == "MODIFY" ||
+				insertType == "SEARCH" ||
+				insertType == "MUSIC_DETAIL") && (
 				<button onClick={handleCancelClick} className="prev">
 					이전
 				</button>
 			)}
+
 			<h2>{form.pageTitle}</h2>
 
 			{(insertType == "MODIFY" || insertType == "NEW") && (
