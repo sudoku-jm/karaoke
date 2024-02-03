@@ -4,6 +4,11 @@ import { handleInsert } from "../../reducers/music";
 import { useRouter } from "next/router";
 import { queryStringToObject } from "../../func/common";
 
+const insertTypeBtnPrev = ["SEARCH", "MUSIC_DETAIL", "BOARD"];
+const insertTypeBtnCancel = ["MODIFY"];
+const insertTypeBtnWrite = ["MODIFY", "NEW"];
+const insertTypeBtnGoModify = ["MUSIC_DETAIL"];
+
 const Top = ({ insertType, flag }) => {
 	const dispatch = useDispatch();
 	const router = useRouter();
@@ -24,6 +29,12 @@ const Top = ({ insertType, flag }) => {
 					break;
 				case "SEARCH":
 					title = "검색 결과";
+					break;
+				case "BOARD":
+					title = "요청 리스트";
+					break;
+				case "BOARD_DETAIL":
+					title = "요청 상세";
 					break;
 
 				case "MUSIC_DETAIL":
@@ -68,6 +79,8 @@ const Top = ({ insertType, flag }) => {
 			const title = sessionStorage.getItem("musicTitle");
 
 			router.push(`/music/${musicId}?schTxt=${schTxt}&title=${title}`);
+		} else if (insertType == "BOARD_DETAIL") {
+			router.push(`/board`);
 		} else {
 			//메인으로 이동
 			router.push("/");
@@ -75,29 +88,42 @@ const Top = ({ insertType, flag }) => {
 	}, [insertType]);
 	return (
 		<header>
-			{(insertType == "SEARCH" || insertType == "MUSIC_DETAIL") && (
-				<button onClick={handleCancelClick} className="prev">
-					이전
-				</button>
+			{insertTypeBtnPrev.map(
+				(type) =>
+					insertType.includes(type) && (
+						<button onClick={handleCancelClick} className="prev">
+							이전
+						</button>
+					),
 			)}
-			{insertType == "MODIFY" && (
-				<button onClick={handleCancelClick} className="prev">
-					취소
-				</button>
+
+			{insertTypeBtnCancel.map(
+				(type) =>
+					insertType.includes(type) && (
+						<button onClick={handleCancelClick} className="prev">
+							취소
+						</button>
+					),
 			)}
 
 			<h2>{form.pageTitle}</h2>
 
-			{(insertType == "MODIFY" || insertType == "NEW") && (
-				<button onClick={handleWirteClick} className="insert">
-					요청
-				</button>
+			{insertTypeBtnWrite.map(
+				(type) =>
+					insertType.includes(type) && (
+						<button onClick={handleWirteClick} className="insert">
+							요청
+						</button>
+					),
 			)}
 
-			{insertType == "MUSIC_DETAIL" && (
-				<button onClick={handleModifyLink} className="right">
-					수정요청
-				</button>
+			{insertTypeBtnGoModify.map(
+				(type) =>
+					insertType.includes(type) && (
+						<button onClick={handleModifyLink} className="right">
+							수정요청
+						</button>
+					),
 			)}
 		</header>
 	);

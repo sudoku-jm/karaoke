@@ -11,96 +11,7 @@ const beforeAfterVerticalBar = `
 	height: 15px;
 	background-color: var(--color-border1);
 `;
-
-export const Container = styled.main`
-	margin: 0 auto;
-	width: 768px;
-	${media.tablet`
-		width:100%;
-	`}
-`;
-
-export const BoardRequestListStyle = styled.div`
-	h3 {
-		font-size: 1.8rem;
-	}
-	tr {
-		th {
-			font-weight: 700;
-		}
-		th,
-		td {
-			padding: 10px 5px;
-			border-bottom: 1px solid var(--color-border1);
-		}
-		&.modify {
-			td {
-				background: var(--color-ref-bg);
-			}
-		}
-	}
-	.link {
-		font-size: 12px;
-		word-break: break-all;
-	}
-	.sing-code {
-		padding: 4px;
-		background: var(--color-secondary);
-		font-weight: 700;
-		font-size: 14px;
-	}
-`;
-
-export const MainContainerStyle = styled.main`
-	padding: 40px 10px;
-	.main__title {
-		font-size: 2rem;
-		font-weight: 700;
-	}
-`;
-
-const numberItemStyle = `
-display: flex;
-justify-content: center;
-dl {
-	margin: 5px;
-	padding: 10px;
-	width: 50%;
-	text-align: center;
-	background-color: var(--color-secondary);
-	border-radius: 10px;
-	dt {
-		display: inline-block;
-		padding: 4px 8px;
-		border-radius: 10px;
-		color: var(--color-white);
-		font-size: 11px;
-		background: var(--color-primary);
-	}
-	dd {
-		margin-top: 8px;
-		font-weight: 700;
-		color: var(--color-primary);
-		font-size: 18px;
-	}
-}
-`;
-// 검색 리스트 스타일
-export const SearchListContainerStyle = styled.main`
-	padding: 10px;
-	background-color: var(--color-background-EEF2FF);
-`;
-
-export const SearchListStyle = styled.ul``;
-
-export const SearchListItemStyle = styled.li`
-	margin-bottom: 15px;
-	padding: 15px;
-	background-color: var(--color-white);
-	border-radius: 10px;
-	font-size: 14px;
-	position: relative;
-	box-shadow: 0 5px 5px rgba(0, 0, 0, 0.03);
+const LabelItemStyle = `
 	.label-item {
 		padding: 2px 4px;
 		border: 1px solid var(--color-border1);
@@ -108,12 +19,8 @@ export const SearchListItemStyle = styled.li`
 		border-radius: 4px;
 		color: var(--color-primary);
 	}
-	.title {
-		display: block;
-		margin: 15px 0;
-		font-size: 16px;
-		font-weight: 700;
-	}
+`;
+const SingerItemStyle = `
 	.singer-item {
 		em {
 			position: relative;
@@ -134,64 +41,203 @@ export const SearchListItemStyle = styled.li`
 			}
 		}
 	}
+`;
+const tagItemStyle = `
 
-	.side-wrap {
-		position: absolute;
-		top: 15px;
-		right: 15px;
-		& > button {
-			position: absolute;
-			top: 0px;
-			right: 0px;
-			background: none;
-			width: 20px;
-			height: 20px;
-			cursor: pointer;
-			&:hover {
-				color: var(--color-primary);
-			}
-			span {
+	.tags-items {
+			margin: 10px 0 5px 0;
+			span,
+			a {
 				display: inline-block;
-				font-size: 18px;
+				margin-right: 5px;
+				margin-bottom: 5px;
+				background-color: var(--color-secondary);
+				padding: 4px;
+				border-radius: 4px;
+				color: var(--color-primary);
+				font-size: 11px;
+				text-decoration: none;
 			}
 		}
-		.side-btn-wrap {
+`;
+
+const numberItemStyle = `
+	display: flex;
+	justify-content: center;
+	dl {
+		margin: 5px;
+		padding: 10px;
+		width: 50%;
+		text-align: center;
+		background-color: var(--color-secondary);
+		border-radius: 10px;
+		dt {
+			display: inline-block;
+			padding: 4px 8px;
+			border-radius: 10px;
+			color: var(--color-white);
+			font-size: 11px;
+			background: var(--color-primary);
+		}
+		dd {
+			margin-top: 8px;
+			font-weight: 700;
+			color: var(--color-primary);
+			font-size: 18px;
+		}
+	}
+`;
+export const Container = styled.main`
+	margin: 0 auto;
+	width: 768px;
+	${media.tablet`
+		width:100%;
+	`}
+`;
+
+export const BoardRequestListStyle = styled.div`
+	${() => {
+		let styles = "";
+		styles += `
+			li {
+				margin-bottom: 10px;
+				background-color: var(--color-white);
+				padding: 15px;
+				border-radius: 10px;
+				font-size: 14px;
+				&.modify {
+				}
+
+			}
+			.top {
+				span {
+					display: inline-block;
+					margin-right: 5px;
+				}
+			}
+			.con {
+				padding: 15px 0;
+				.title {
+					display: block;
+					margin-bottom: 10px;
+					font-weight: 700;
+					font-size: 18px;
+				}
+				.singer-item {
+					margin-bottom:10px;
+				}
+			}
+			.bottom {
+			}
+
+			.request-type {
+				float:right;
+				.before {
+					color: var(--color-primary);
+				}
+			}
+
+			`;
+
+		styles += LabelItemStyle;
+		styles += SingerItemStyle;
+
+		styles += `
+			.num-items {
+				${numberItemStyle}
+			}
+		`;
+
+		styles += tagItemStyle;
+		return styles;
+	}}
+`;
+
+export const MainContainerStyle = styled.main`
+	padding: 40px 10px;
+	.main__title {
+		font-size: 2rem;
+		font-weight: 700;
+	}
+`;
+
+// 검색 리스트 스타일
+export const SearchListContainerStyle = styled.main`
+	padding: 10px;
+	background-color: var(--color-background-EEF2FF);
+`;
+
+export const SearchListStyle = styled.ul``;
+
+export const SearchListItemStyle = styled.li`
+	${() => {
+		let styles = "";
+		styles += `
+		margin-bottom: 15px;
+		padding: 15px;
+		background-color: var(--color-white);
+		border-radius: 10px;
+		font-size: 14px;
+		position: relative;
+		box-shadow: 0 5px 5px rgba(0, 0, 0, 0.03);
+		
+		.title {
+			display: block;
+			margin: 15px 0;
+			font-size: 16px;
+			font-weight: 700;
+		}
+	
+
+		.side-wrap {
 			position: absolute;
-			top: 30px;
-			right: 0;
-			width: 80px;
-			padding: 8px;
-			background-color: var(--color-white);
-			border-radius: 4px;
-			box-shadow: 0 0 20px rgba(0, 0, 0, 0.1);
-			button {
+			top: 15px;
+			right: 15px;
+			& > button {
+				position: absolute;
+				top: 0px;
+				right: 0px;
 				background: none;
+				width: 20px;
+				height: 20px;
 				cursor: pointer;
 				&:hover {
 					color: var(--color-primary);
 				}
+				span {
+					display: inline-block;
+					font-size: 18px;
+				}
+			}
+			.side-btn-wrap {
+				position: absolute;
+				top: 30px;
+				right: 0;
+				width: 80px;
+				padding: 8px;
+				background-color: var(--color-white);
+				border-radius: 4px;
+				box-shadow: 0 0 20px rgba(0, 0, 0, 0.1);
+				button {
+					background: none;
+					cursor: pointer;
+					&:hover {
+						color: var(--color-primary);
+					}
+				}
 			}
 		}
-	}
-	.tags-items {
-		margin: 10px 0 5px 0;
-		a {
-			display: inline-block;
-			margin-right: 5px;
-			margin-bottom: 5px;
-			background-color: var(--color-secondary);
-			padding: 4px;
-			border-radius: 4px;
-			color: var(--color-primary);
-			font-size: 11px;
-			text-decoration: none;
+
+		.num-items {
+			${numberItemStyle}
 		}
-	}
-	.num-items {
-		${numberItemStyle}
-	}
-	.btn-wrap {
-	}
+
+		`;
+		styles += tagItemStyle;
+		styles += SingerItemStyle;
+		styles += LabelItemStyle;
+		return styles;
+	}}
 `;
 
 export const SearchAreaStyle = styled.section`

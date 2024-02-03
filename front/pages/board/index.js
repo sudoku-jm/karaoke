@@ -14,10 +14,14 @@ import {
 import wrapper from "../../store/configureStore";
 import { END } from "redux-saga";
 import axios from "axios";
-import { BoardRequestListStyle } from "../../style/ContentStyle";
+import {
+	BoardRequestListStyle,
+	SearchListContainerStyle,
+} from "../../style/ContentStyle";
 import AppLayout from "../../components/AppLayout";
 import { Validation } from "../../func/common";
 import Link from "next/link";
+import Top from "../../components/form/top";
 
 const index = () => {
 	const { getBoardListLoading, hasMoreBoardList, getBoardList } = useSelector(
@@ -123,7 +127,7 @@ const index = () => {
 			contents: board.b_contents,
 			tags: board.b_tags,
 			new: board.new,
-			musicId: board.MusicId,
+			musicId: board.MusicId, //아이디는 있을 수 있고, 없을 수 있다.
 			boardId: board.id,
 		};
 		dispatch({
@@ -134,53 +138,30 @@ const index = () => {
 
 	return (
 		<AppLayout>
-			<Link href="/">메인으로</Link>
-			<BoardRequestListStyle>
-				<h3>곡 추가/수정 요청 리스트</h3>
+			<Top insertType="BOARD" />
 
-				{list !== null && (
-					<table>
-						<colgroup>
-							<col width="auto" />
-							<col width="auto" />
-							<col width="auto" />
-							<col width="auto" />
-							<col width="auto" />
-							<col width="6%" />
-							<col width="auto" />
-							<col width="auto" />
-						</colgroup>
-						<thead>
-							<tr>
-								<th>요청</th>
-								<th>카테고리</th>
-								<th>제목</th>
-								<th>가수</th>
-								<th>금영번호</th>
-								<th>태진번호</th>
-								<th>태그</th>
-								<th>유튜브 링크</th>
-								<th>의견</th>
-								<th>-</th>
-							</tr>
-						</thead>
-						<tbody>
-							{list.map((board) => {
-								return (
-									<BoardListRequest
-										key={board.id}
-										pageType="BOARD"
-										board={board}
-										handleInsertCategory={handleInsertCategory}
-										handleInsertSinger={handleInsertSinger}
-										handleInsertMusic={handleInsertMusic}
-									/>
-								);
-							})}
-						</tbody>
-					</table>
-				)}
-			</BoardRequestListStyle>
+			<SearchListContainerStyle>
+				<div className="list-con">
+					<BoardRequestListStyle>
+						{list !== null && (
+							<ul>
+								{list.map((board) => {
+									return (
+										<BoardListRequest
+											key={board.id}
+											pageType="BOARD"
+											board={board}
+											handleInsertCategory={handleInsertCategory}
+											handleInsertSinger={handleInsertSinger}
+											handleInsertMusic={handleInsertMusic}
+										/>
+									);
+								})}
+							</ul>
+						)}
+					</BoardRequestListStyle>
+				</div>
+			</SearchListContainerStyle>
 			<div
 				ref={hasMoreBoardList && !getBoardListLoading ? ref : undefined}
 				style={{ height: 10, background: "red" }}
