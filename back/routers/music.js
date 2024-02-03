@@ -513,6 +513,89 @@ router.get("/getBoardList", async (req, res, next) => {
     }
 });
 
+//요청 리스트 상세 조회
+router.get("/boardInfo", async (req, res, next) => {
+    try {
+        console.log("/music/boardInfo=================================[START]");
+        if (req.query.id == undefined && req.query.id == "") {
+            return res.status(202).json({
+                msg: "음악 정보가 없습니다.",
+            });
+        }
+
+        const resultData = await Board.findOne({
+            where: {
+                id: req.query.id,
+            },
+            include: [
+                {
+                    model: Category,
+                    attributes: ["name"],
+                },
+                {
+                    model: Singer,
+                    attributes: ["name", "e_name", "j_name"],
+                },
+                {
+                    model: Music,
+                    attributes: ["id"],
+                },
+            ],
+            attributes: {
+                exclude: ["createdAt", "deletedAt"],
+            },
+        });
+
+        let beforeMusicData = {};
+        if (resultData.Music !== null) {
+            //기존에 등록된 곡이 있을 때
+            const musicId = resultData.Music.id;
+            beforeMusicData = await Music.findOne({
+                where: {
+                    id: musicId,
+                },
+                include: [
+                    {
+                        model: Tag,
+                        attributes: ["name"],
+                    },
+                    {
+                        model: Category,
+                        attributes: ["name"],
+                    },
+                    {
+                        model: Singer,
+                        attributes: ["name", "e_name", "j_name"],
+                    },
+                    {
+                        model: Hit,
+                        attributes: ["count"],
+                    },
+                    {
+                        model: Link,
+                        attributes: ["src"],
+                    },
+                ],
+                attributes: {
+                    exclude: ["createdAt", "deletedAt"],
+                },
+            });
+        } else {
+            //등록된 곡이 없을 때
+            beforeMusicData = null;
+        }
+
+        res.status(200).json({
+            data: {
+                resultData,
+                beforeMusicData,
+            },
+            msg: "SUCCESS",
+        });
+        console.log("/music/boardInfo=================================[END]");
+    } catch (error) {}
+});
+
 //음악 검색 리스트
 //music/searchMusicList
 router.get("/searchMusicList", async (req, res, next) => {

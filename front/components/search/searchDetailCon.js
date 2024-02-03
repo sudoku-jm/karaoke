@@ -1,5 +1,5 @@
 import React, { useEffect, useState } from "react";
-import { SearchDetailContainerStyle } from "../../style/ContentStyle";
+import { DetailContainerStyle } from "../../style/ContentStyle";
 import MusicDetail from "../music/musicDetail";
 import MusicDetailOtherList from "../music/musicDatailOtherList";
 import { useSelector } from "react-redux";
@@ -33,7 +33,7 @@ const SearchDetailCon = ({ schTxt }) => {
 		}
 	}, [musicInfoDone, musicChanInfoDone]);
 	return (
-		<SearchDetailContainerStyle>
+		<DetailContainerStyle>
 			{musicInfo !== null && <MusicDetail music={music} />}
 			{musicChanInfo !== null && (
 				<div className="others-wrap">
@@ -58,7 +58,7 @@ const SearchDetailCon = ({ schTxt }) => {
 					)}
 				</div>
 			)}
-		</SearchDetailContainerStyle>
+		</DetailContainerStyle>
 	);
 };
 

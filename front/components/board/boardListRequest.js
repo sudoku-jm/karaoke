@@ -213,7 +213,7 @@ const BoardListRequest = ({ board, pageType }) => {
 							))}
 					</div> */}
 					<div className="link-itmes">
-						{Validation.isEmpty(b_link) ? "🎬" : ""}
+						{!Validation.isEmpty(b_link) ? "🎬" : ""}
 					</div>
 
 					<div className="content-items">

@@ -43,7 +43,6 @@ const SingerItemStyle = `
 	}
 `;
 const tagItemStyle = `
-
 	.tags-items {
 			margin: 10px 0 5px 0;
 			span,
@@ -87,6 +86,39 @@ const numberItemStyle = `
 		}
 	}
 `;
+
+const TabItemStyle = `
+	.tab-handler{
+		display:flex;
+		flex-wrap:wrap;
+		border-bottom:1px solid var(--color-border1);
+		li{
+			flex : 1;
+			&.on{
+				border-bottom:2px solid var(--color-primary);
+				button{
+					color:var(--color-primary);
+				}
+			}
+			button{
+				padding:15px;
+				width:100%;
+				background:none;
+				color:var(--color-grey-7b);
+			}
+		}
+	}
+	.tab-contents{
+		padding:50px 0;
+		.tab-con{
+			h3{
+				padding: 0 15px;
+				font-weight:700;
+			}
+		}
+	}
+`;
+
 export const Container = styled.main`
 	margin: 0 auto;
 	width: 768px;
@@ -123,6 +155,7 @@ export const BoardRequestListStyle = styled.div`
 					font-weight: 700;
 					font-size: 18px;
 				}
+				.link-itmes,
 				.singer-item {
 					margin-bottom:10px;
 				}
@@ -314,6 +347,7 @@ const FormStyle = `
 			li{
 				display:flex;
 				justify-content:space-between;
+				flex-wrap:wrap;
 				padding:15px 0;
 				border-bottom:1px solid var(--color-border1);
 				em{
@@ -322,6 +356,7 @@ const FormStyle = `
 						color:var(--color-grey-B8B8B8);
 					}
 					&:last-child{
+						max-width:80%;
 						color:var(--color-black0);
 					}
 				}
@@ -633,8 +668,8 @@ const OtherListStyle = `
 }
 `;
 
-//검색 상세 스타일
-export const SearchDetailContainerStyle = styled.main`
+//상세 스타일
+export const DetailContainerStyle = styled.main`
 	${({}) => {
 		let styles = "";
 		styles += FormStyle;
@@ -677,6 +712,17 @@ export const SearchDetailContainerStyle = styled.main`
 					color: var(--color-primary) !important;
 					font-weight:700;
 				}
+				.tags-items{
+					text-align:right;
+					a{
+						display: inline-block;
+						margin-right: 5px;
+						margin-bottom: 5px;
+						text-decoration: none;
+						color: var(--color-primary);
+						word-break: keep-all;
+					}
+				}
 				.form-cols{
 					margin:60px auto;
 					&.col3{
@@ -703,6 +749,7 @@ export const SearchDetailContainerStyle = styled.main`
 								margin:5px 0 10px 0;
 								text-align:center;
 								font-size:12px;
+							
 							}
 							span{
 								display:block;
@@ -716,6 +763,7 @@ export const SearchDetailContainerStyle = styled.main`
 		`;
 
 		styles += OtherListStyle;
+		styles += TabItemStyle;
 
 		return styles;
 	}}
