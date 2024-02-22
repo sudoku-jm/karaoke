@@ -2,6 +2,7 @@ import React from "react";
 import { youtubeParser } from "../../func/board";
 import moment from "moment";
 import Link from "next/link";
+import MusicSlider from "../form/musicSlider";
 
 const MusicDetail = ({ music }) => {
 	return (
@@ -26,8 +27,8 @@ const MusicDetail = ({ music }) => {
 						<span>{music.Hit}</span>
 					</li>
 					<li>
-						<em>제목 검색 횟수</em>
-						<span>0</span>
+						<em>좋아요</em>
+						<span>(개발중)</span>
 					</li>
 				</ul>
 			</div>
@@ -73,15 +74,11 @@ const MusicDetail = ({ music }) => {
 			</p>
 			{music.Links?.length > 0 && (
 				<div className="links-wrap">
-					{music.Links?.map((link, idx) => (
-						<div
-							key={idx}
-							className="link-item"
-							dangerouslySetInnerHTML={{
-								__html: youtubeParser(link.src, 100, null, "persent"),
-							}}
-						></div>
-					))}
+					<MusicSlider
+						listType="MUSIC"
+						musicList={music.Links}
+						musicInfo={{ width: 100, height: null, unit: "persent" }}
+					/>
 				</div>
 			)}
 		</div>

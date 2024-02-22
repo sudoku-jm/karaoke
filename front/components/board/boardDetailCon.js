@@ -80,7 +80,7 @@ const BoardDetailCon = () => {
 								<BoardInfo music={boardData.requestData} />
 							</>
 						) : (
-							"정보가 없습니다"
+							<p className="none">정보가 없습니다</p>
 						)}
 					</div>
 				)}
@@ -92,7 +92,7 @@ const BoardDetailCon = () => {
 								<MusicInfo music={boardData.beforeData} />
 							</>
 						) : (
-							"정보가 없습니다"
+							<p className="none">등록된 정보가 없습니다</p>
 						)}
 					</div>
 				)}

@@ -1,7 +1,7 @@
 import React from "react";
-import { youtubeParser } from "../../func/board";
 import moment from "moment";
 import Link from "next/link";
+import MusicSlider from "../form/musicSlider";
 
 const BoardInfo = ({ music }) => {
 	return (
@@ -76,15 +76,11 @@ const BoardInfo = ({ music }) => {
 			</p>
 
 			<div className="links-wrap">
-				{music.b_link.split(",")?.map((link, idx) => (
-					<div
-						key={idx}
-						className="link-item"
-						dangerouslySetInnerHTML={{
-							__html: youtubeParser(link, 100, null, "persent"),
-						}}
-					></div>
-				))}
+				<MusicSlider
+					listType="BOARD"
+					musicList={music.b_link.split(",")}
+					musicInfo={{ width: 100, height: null, unit: "persent" }}
+				/>
 			</div>
 		</div>
 	);

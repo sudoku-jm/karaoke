@@ -20,6 +20,7 @@ const MusicInfo = () => {
 
 	//상세 페이지 정보 API 호출
 	useEffect(() => {
+		console.log("id?", id);
 		if (
 			!Validation.isEmpty(id) &&
 			id !== undefined &&
@@ -37,7 +38,7 @@ const MusicInfo = () => {
 
 			setFlag(!flag);
 		} else {
-			router.push("/");
+			// router.push("/");
 		}
 	}, [id]);
 

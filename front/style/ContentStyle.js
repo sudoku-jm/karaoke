@@ -115,6 +115,12 @@ const TabItemStyle = `
 				padding: 0 15px;
 				font-weight:700;
 			}
+			.none{
+				text-align:center;
+				color:var(--color-grey-7b);
+				font-size:14px;
+			}
+			
 		}
 	}
 `;
@@ -191,6 +197,26 @@ export const MainContainerStyle = styled.main`
 	.main__title {
 		font-size: 2rem;
 		font-weight: 700;
+	}
+	.main-btn-wrap {
+		display: flex;
+		justify-content: center;
+		margin: 30px auto;
+		button,
+		a {
+			margin: 0 5px;
+			padding: 0 20px;
+			text-decoration: none;
+			text-align: center;
+			min-width: 150px;
+			font-size: 14px;
+			line-height: 50px;
+		}
+		.btn-request {
+			background-color: var(--color-grey-f5f5f7);
+			border-radius: 10px;
+			color: var(--color-primary);
+		}
 	}
 `;
 
@@ -635,14 +661,16 @@ const OtherListStyle = `
 	}
 }
 .other-items{
-	display:flex;
-	overflow-y:auto;
 	a{
 		text-decoration:none;
+	}
+	.swiper-slide{
+		width:auto !important;
 	}
 	.other-item{
 		margin-right:10px;
 		min-width:200px;
+		min-height:185px;
 		padding:15px;
 		border-radius:10px;
 		background:var(--color-white);
@@ -707,6 +735,10 @@ export const DetailContainerStyle = styled.main`
 					margin: 30px auto;
 					border-radius:20px;
 					overflow:hidden;
+					.swiper-button-prev,
+					.swiper-button-next{
+						z-index:20;
+					}
 				}
 				.num{
 					color: var(--color-primary) !important;

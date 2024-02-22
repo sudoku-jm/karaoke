@@ -4,7 +4,7 @@ import Top from "./top";
 import { useDispatch, useSelector } from "react-redux";
 import { INSERT_BOARD_REQUEST, handleInsertReset } from "../../reducers/music";
 import SearchCategory from "./searchCategory";
-import { board, youtubeParser } from "../../func/board";
+import { board } from "../../func/board";
 import SearchSinger from "./searchSinger";
 import { Validation } from "../../func/common";
 import InputTagsForm from "./inputTagsForm";

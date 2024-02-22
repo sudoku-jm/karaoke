@@ -5,6 +5,7 @@ import { PopupInsertResultStyle } from "../../style/ContentStyle";
 import { Validation } from "../../func/common";
 import { youtubeParser } from "../../func/board";
 import Link from "next/link";
+import MusicSlider from "./musicSlider";
 
 const resultDataInit = {
 	beforeData: {},
@@ -131,21 +132,19 @@ const ResultForm = ({ insertType }) => {
 									<div className="links">
 										<em>요청 유튜브 링크</em>
 
-										{!Validation.isEmpty(resultData.newData.b_link)
-											? resultData.newData.b_link
-													.split(",")
-													.map((item, idx) => (
-														<>
-															<div
-																key={idx}
-																className="link-item"
-																dangerouslySetInnerHTML={{
-																	__html: youtubeParser(item, 320),
-																}}
-															></div>
-														</>
-													))
-											: ""}
+										{!Validation.isEmpty(resultData.newData.b_link) ? (
+											<MusicSlider
+												listType="BOARD"
+												musicList={resultData.newData.b_link.split(",")}
+												musicInfo={{
+													width: 100,
+													height: null,
+													unit: "persent",
+												}}
+											/>
+										) : (
+											""
+										)}
 									</div>
 								</div>
 							)}

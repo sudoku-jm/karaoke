@@ -31,11 +31,16 @@ const MainCon = () => {
 			<MainSearch $pageType="MAIN" />
 			<PopualRankKeywordList />
 			<RankList />
-			<ButtonWrite
-				handleWrite={handleWrite}
-				formVisible={visible.visibleWriteForm}
-			/>
-			<Link href="/board">요청리스트</Link>
+			<div className="main-btn-wrap">
+				<Link href="/board" className="btn-request">
+					요청리스트
+				</Link>
+				<ButtonWrite
+					handleWrite={handleWrite}
+					formVisible={visible.visibleWriteForm}
+				/>
+			</div>
+
 			{visible.visibleWriteForm && <WriteForm insertType="NEW" />}
 		</MainContainerStyle>
 	);

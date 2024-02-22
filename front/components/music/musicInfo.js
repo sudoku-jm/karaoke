@@ -2,6 +2,7 @@ import React from "react";
 import { youtubeParser } from "../../func/board";
 import moment from "moment";
 import Link from "next/link";
+import MusicSlider from "../form/musicSlider";
 
 const MusicInfo = ({ music }) => {
 	return (
@@ -63,19 +64,14 @@ const MusicInfo = ({ music }) => {
 					{moment(new Date(music.updatedAt)).format("YYYY/MM/DD HH:mm:ss")}
 				</span>
 			</p>
-			{music.Links?.length > 0 && (
-				<div className="links-wrap">
-					{music.Links?.map((link, idx) => (
-						<div
-							key={idx}
-							className="link-item"
-							dangerouslySetInnerHTML={{
-								__html: youtubeParser(link.src, 100, null, "persent"),
-							}}
-						></div>
-					))}
-				</div>
-			)}
+
+			<div className="links-wrap">
+				<MusicSlider
+					listType="MUSIC"
+					musicList={music.Links}
+					musicInfo={{ width: 100, height: null, unit: "persent" }}
+				/>
+			</div>
 		</div>
 	);
 };

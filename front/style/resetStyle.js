@@ -57,10 +57,13 @@ const CommonStyle = styled.section`
 	}
 
 	header {
-		position: relative;
+		position: sticky;
+		top: 0;
+		background-color: var(--color-white);
 		padding: 10px;
 		width: 100%;
 		height: 65px;
+		z-index: 20;
 		h2 {
 			position: absolute;
 			top: 50%;
