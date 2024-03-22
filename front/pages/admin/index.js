@@ -13,6 +13,7 @@ import {
 } from "../../style/ContentStyle";
 import AppLayout from "../../components/AppLayout";
 import Top from "../../components/form/top";
+import ModalDefault from "../../components/modal/modalDefault";
 
 const index = () => {
 	const { getBoardListLoading, hasMoreBoardList, getBoardList } = useSelector(
@@ -22,6 +23,7 @@ const index = () => {
 	const [list, setList] = useState(null);
 	const [ref, inView] = useInView();
 	const dispatch = useDispatch();
+
 	useEffect(() => {
 		if (inView && hasMoreBoardList && !getBoardListLoading) {
 			let lastId = getBoardList[getBoardList.length - 1]?.id;
@@ -65,6 +67,8 @@ const index = () => {
 				ref={hasMoreBoardList && !getBoardListLoading ? ref : undefined}
 				style={{ height: 10, background: "red" }}
 			></div>
+
+			<ModalDefault />
 		</AppLayout>
 	);
 };

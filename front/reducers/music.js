@@ -63,6 +63,9 @@ export const INSERT_BOARD_REQUEST = "INSERT_BOARD_REQUEST";
 export const INSERT_BOARD_SUCCESS = "INSERT_BOARD_SUCCESS";
 export const INSERT_BOARD_FAILURE = "INSERT_BOARD_FAILURE";
 export const INSERT_BOARD_RESET = "INSERT_BOARD_RESET";
+export const handleInsertBoardReset = () => ({
+	type: INSERT_BOARD_RESET,
+});
 
 //카테고리 리스트 가져오기
 export const GET_CATEGORY_REQUEST = "GET_CATEGORY_REQUEST";
@@ -144,6 +147,8 @@ const reducer = (state = initalState, action) => {
 				break;
 			case INSERT_BOARD_RESET:
 				draft.insertMusicResult = null;
+				draft.insertMusicDone = false;
+				draft.insertMusicError = null;
 				break;
 			//카테고리 리스트 가져오기
 			case GET_CATEGORY_REQUEST:

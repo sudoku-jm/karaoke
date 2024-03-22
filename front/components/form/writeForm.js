@@ -35,8 +35,13 @@ const formInit = {
 
 const WriteForm = ({ insertType }) => {
 	const dispatch = useDispatch();
-	const { insertWriteCall, insertWriteType, musicInfoDone, musicInfo } =
-		useSelector((state) => state.music);
+	const {
+		insertWriteCall,
+		insertWriteType,
+		musicInfoDone,
+		musicInfo,
+		insertMusicDone,
+	} = useSelector((state) => state.music);
 	const [insertForm, setInsertForm] = useState(formInit);
 	//작성 타입 폼 설정
 	useEffect(() => {
@@ -173,7 +178,7 @@ const WriteForm = ({ insertType }) => {
 
 	return (
 		<PageWriteStyle>
-			<Top insertType={insertType} />
+			<Top insertType={insertType} resultState={insertMusicDone} />
 			<article className="form-wrap">
 				<SearchCategory insertForm={insertForm} onChangeForm={setInsertForm} />
 				<SearchSinger insertForm={insertForm} onChangeForm={setInsertForm} />

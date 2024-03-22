@@ -1,7 +1,7 @@
 import React, { useCallback, useEffect } from "react";
 import { Validation } from "../../func/common";
 import { useRouter } from "next/router";
-import { useSelector } from "react-redux";
+import { useDispatch, useSelector } from "react-redux";
 import {
 	INSERT_CATEGORY_REQUEST,
 	INSERT_MUSIC_REQUEST,
@@ -31,49 +31,8 @@ const BoardListRequest = ({ board, pageType }) => {
 		MusicId,
 	} = board;
 
-	const {
-		insertCategoryError,
-		insertCategory,
-		insertCategoryDone,
-		insertSingerError,
-		insertSinger,
-		insertSingerDone,
-		insertMusicError,
-		insertMusic,
-		insertMusicDone,
-	} = useSelector((state) => state.admin);
-
 	const router = useRouter();
-
-	useEffect(() => {
-		if (insertCategoryError) {
-			alert(insertCategoryError.msg);
-			dispatch(handleInsertCategoryReset());
-		}
-		if (insertSingerError) {
-			alert(insertSingerError.msg);
-			dispatch(handleInsertSingerReset());
-		}
-		if (insertMusicError) {
-			alert(insertMusicError.msg);
-			dispatch(handleInsertMusicReset());
-		}
-	}, [insertCategoryError, insertSingerError, insertMusicError]);
-
-	useEffect(() => {
-		if (insertCategoryDone) {
-			alert("등록 완료 : " + insertCategory.name);
-			dispatch(handleInsertCategoryReset());
-		}
-		if (insertSingerDone) {
-			alert("등록 완료");
-			dispatch(handleInsertSingerReset());
-		}
-		if (insertMusicDone) {
-			alert("등록 완료");
-			dispatch(handleInsertMusicReset());
-		}
-	}, [insertCategoryDone, insertSingerDone, insertMusicDone]);
+	const dispatch = useDispatch();
 
 	const handleGoDetail = useCallback(() => {
 		router.push(`/board/${id}?pageType=${pageType}`);

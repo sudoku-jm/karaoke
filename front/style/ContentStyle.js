@@ -167,6 +167,15 @@ export const BoardRequestListStyle = styled.div`
 				}
 			}
 			.bottom {
+				border-top:1px solid var(--color-secondary);
+				padding:10px 0 0 0;
+				button{
+					padding:5px 8px;
+					background:var(--color-grey-7b);
+					border-radius:8px;
+					color:var(--color-white);
+					cursor:pointer;
+				}
 			}
 
 			.request-type {
@@ -344,9 +353,20 @@ export const PopualRankKeywordListStyle = styled.div`
 		}
 	}
 	ul {
-		margin: 10px 0;
+		display: flex;
+		margin: 5px 0;
+		padding: 20px 10px;
+		background-color: var(--color-background-EEF2FF);
 		li {
+			margin: 0 5px 0;
 			a {
+				display: block;
+				padding: 8px 15px;
+				background-color: var(--color-blue-8B99B7);
+				color: var(--color-white);
+				text-decoration: none;
+				border-radius: 20px;
+				font-size: 14px;
 			}
 		}
 	}
@@ -439,6 +459,9 @@ export const PopupInsertResultStyle = styled.section`
 			background:var(--color-white);
 			height:100vh;
 			overflow-y:auto;
+			.form-wrap{
+				padding:100px 0 0 0;
+			}
 			.btn-wrap{
 				margin:0 auto 60px auto;
 				display:flex;
@@ -632,7 +655,8 @@ export const SearchWriteStyle = styled.div`
 				}
 			}
 			.search-result-item{
-				padding:5px;
+				padding:10px;
+				background:var(--color-secondary);
 				border-bottom:1px solid var(--color-border1);
 				cursor:pointer;
 				span{
@@ -796,6 +820,45 @@ export const DetailContainerStyle = styled.main`
 
 		styles += OtherListStyle;
 		styles += TabItemStyle;
+
+		return styles;
+	}}
+`;
+
+//모달 스타일
+export const ModalDefaultStyle = styled.section`
+	${({ $w }) => {
+		let styles = "";
+		styles += `
+			position: fixed;
+			top: 50%;
+			left: 50%;
+			transform: translate(-50%, -50%);
+			z-index: 99;
+			padding: 20px;
+			background-color: var(--color-white);
+			box-shadow: 0 0 20px rgba(0, 0, 0, 0.1);
+		`;
+
+		styles += `
+			max-width: ${$w}px;
+		`;
+		styles += `
+			.con {
+				text-align: center;
+				word-break: keep-all;
+			}
+			.bottom {
+				padding: 10px 0 0 0;
+				text-align: center;
+				button {
+					padding: 5px 10px;
+					background-color: var(--color-black2);
+					border-radius: 4px;
+					color: var(--color-white);
+				}
+			}
+		`;
 
 		return styles;
 	}}

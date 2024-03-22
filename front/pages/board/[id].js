@@ -11,6 +11,8 @@ const RequestInfo = () => {
 	const router = useRouter();
 	const dispatch = useDispatch();
 	const id = router.query?.id;
+	const pageType = router.query?.pageType;
+	console.log("pageType", pageType);
 
 	//상세 페이지 정보 API 호출
 	useEffect(() => {
@@ -41,7 +43,9 @@ const RequestInfo = () => {
 	}, [id]);
 	return (
 		<AppLayout>
-			<Top insertType="BOARD_DETAIL" />
+			<Top
+				insertType={pageType == "ADMIN" ? "BOARD_DETAIL_ADMIN" : "BOARD_DETAIL"}
+			/>
 			<BoardDetailCon />
 		</AppLayout>
 	);

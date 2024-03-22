@@ -33,6 +33,7 @@ const ResultForm = ({ insertType }) => {
 	useEffect(() => {
 		if (insertMusicDone || insertMusicError) {
 			dispatch(handleInsertReset());
+
 			if (insertMusicResult !== null) {
 				setResultData({
 					beforeData: !Validation.isEmptyObject(insertMusicResult.beforeData)

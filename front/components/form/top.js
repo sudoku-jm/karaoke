@@ -1,16 +1,18 @@
 import React, { useCallback, useEffect, useState } from "react";
 import { useDispatch } from "react-redux";
-import { handleInsert } from "../../reducers/music";
+import { handleInsert, handleInsertBoardReset } from "../../reducers/music";
 import { useRouter } from "next/router";
 import { queryStringToObject } from "../../func/common";
+import { handleInsertMusicReset } from "../../reducers/admin";
 
 const insertTypeBtnPrev = ["SEARCH", "MUSIC_DETAIL", "BOARD"];
 const insertTypeBtnCancel = ["MODIFY"];
 const insertTypeBtnWrite = ["MODIFY", "NEW"];
 const insertTypeBtnGoModify = ["MUSIC_DETAIL"];
 
-const Top = ({ insertType, flag }) => {
+const Top = ({ insertType, flag, resultState }) => {
 	const dispatch = useDispatch();
+
 	const router = useRouter();
 	const [form, setForm] = useState({
 		pageTitle: "",
@@ -77,10 +79,13 @@ const Top = ({ insertType, flag }) => {
 			const schTxt = sessionStorage.getItem("schTxt");
 			const musicId = sessionStorage.getItem("musicId");
 			const title = sessionStorage.getItem("musicTitle");
-
+			dispatch(handleInsertMusicReset());
+			dispatch(handleInsertBoardReset());
 			router.push(`/music/${musicId}?schTxt=${schTxt}&title=${title}`);
 		} else if (insertType == "BOARD_DETAIL") {
 			router.push(`/board`);
+		} else if (insertType == "BOARD_DETAIL_ADMIN") {
+			router.push(`/admin`);
 		} else {
 			//메인으로 이동
 			router.push("/");
@@ -108,14 +113,15 @@ const Top = ({ insertType, flag }) => {
 
 			<h2>{form.pageTitle}</h2>
 
-			{insertTypeBtnWrite.map(
-				(type) =>
-					insertType.includes(type) && (
-						<button onClick={handleWirteClick} className="insert">
-							요청
-						</button>
-					),
-			)}
+			{resultState ||
+				insertTypeBtnWrite.map(
+					(type) =>
+						insertType.includes(type) && (
+							<button onClick={handleWirteClick} className="insert">
+								요청
+							</button>
+						),
+				)}
 
 			{insertTypeBtnGoModify.map(
 				(type) =>
